@@ -1,0 +1,6 @@
+進到某個網頁後，背後大致上的運行方式
+
+以人數變化來說，進到home.html，走到 $.get('/api/gym-data/', function(data)，會去跟urls.py拿資料
+urls.py中from .views import home, gym_data_api，會匯入views.py的函式
+進到views.py，from .data_scraper import scrape_data會去跟data_scraper.py拿人數
+

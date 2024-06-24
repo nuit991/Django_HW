@@ -1,8 +1,0 @@
-進到某個網頁後，背後大致上的運行方式
-Django會先去確認myproject/urls.py，根據path('', include('myapp.urls'))
-->
-1.其中path('', ...) 中的空字符串 '' 表示根路径，即网站的根 URL（例如 http://127.0.0.1:8000/）。
-2.当用户访问根 URL 时，这个路径会被匹配。
-->
-1.include('myapp.urls') 告诉 Django 在匹配到这个路径时，应包含 myapp 应用的 URL 配置。
-2.也就是说，Django 会去加载 myapp/urls.py 文件，并根据其中定义的 URL 模式继续处理请求。
