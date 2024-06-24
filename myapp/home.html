@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym People Count</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let updateCount = 0;
+
+        function updateGymData() {
+            $.get('/api/gym-data/', function(data) {
+                const gymData = data.gym_data;
+                const gymList = $('#gym-list');
+                gymList.empty();  // 清空当前列表
+                gymData.forEach(function(gym) {
+                    gymList.append(`
+                        <li>
+                            <strong>${gym.name}</strong><br>
+                            Pool: ${gym.pool_people}<br>
+                            Gym: ${gym.gym_people}
+                        </li>
+                    `);
+                });
+                updateCount += 1;  // 增加更新次数
+                $('#update-count').text(updateCount);  // 更新页面上的显示次数
+            });
+        }
+
+        $(document).ready(function() {
+            // 初次加载时更新数据
+            updateGymData();
+            // 每分钟更新一次
+            setInterval(updateGymData, 10000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Gym People Count</h1>
+    <p>更新次數: <span id="update-count">0</span></p>  <!-- 增加显示更新次数的元素 -->
+    <ul id="gym-list">
+        {% for gym in gym_data %}
+            <li>
+                <strong>{{ gym.name }}</strong><br>
+                Pool: {{ gym.pool_people }}<br>
+                Gym: {{ gym.gym_people }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<!--
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Data</title>
+</head>
+<body>
+    <h1>Gym Usage Data</h1>
+    <ul>
+        {% for gym in gym_data %}
+            <li>
+                <strong>{{ gym.name }}</strong><br> {# 拿到gym，使用gym.name就只會拿出name的部分 #}
+                Pool: {{ gym.pool_people }}<br>
+                Gym: {{ gym.gym_people }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+
+
+-->
