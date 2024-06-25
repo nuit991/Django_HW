@@ -59,28 +59,39 @@
 
 
 <!--
+<!DOCTYPE html>: 声明文档类型为 HTML5。
+<html lang="en">: 定义文档的语言为英语。
+<meta charset="UTF-8">: 设置文档的字符编码为 UTF-8。
+<title>Gym People Count</title>: 定义网页的标题为“Gym People Count”。
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Data</title>
-</head>
-<body>
-    <h1>Gym Usage Data</h1>
-    <ul>
-        {% for gym in gym_data %}
-            <li>
-                <strong>{{ gym.name }}</strong><br> {# 拿到gym，使用gym.name就只會拿出name的部分 #}
-                Pool: {{ gym.pool_people }}<br>
-                Gym: {{ gym.gym_people }}
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+---
+引入 jQuery
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>: 引入 jQuery 库，版本为 3.6.0。
 
+---
+JavaScript 部分解释
+let updateCount = 0;: 初始化一个全局变量 updateCount，用于记录更新次数。
+updateGymData 函数
+1.$.get('/api/gym-data/', function(data) {...}): 发送 GET 请求到 /api/gym-data/，并在成功获取数据后执行回调函数。
+2.const gymData = data.gym_data;: 从返回的数据中获取 gym_data。
+3.const gymList = $('#gym-list');: 获取 ID 为 gym-list 的元素。
+4.gymList.empty();: 清空当前的列表内容。
+5.gymData.forEach(function(gym) {...}): 遍历 gymData 数组，将每个 gym 的数据插入列表中。
+6.updateCount += 1;: 更新次数加 1。
+7.$('#update-count').text(updateCount);: 更新页面上显示的更新次数。
+8.$(document).ready(function() {...})
+9.$(document).ready(function() {...}): 当文档加载完成时执行的函数。
+10.updateGymData();: 初次加载时调用 updateGymData 函数。
+11.setInterval(updateGymData, 10000);: 每 10 秒钟调用一次 updateGymData 函数，定期更新数据。
 
+---
+HTML 模板部分解释
+身体部分（body）
+<h1>Gym People Count</h1>: 标题。
+<p>更新次數: <span id="update-count">0</span></p>: 显示更新次数，初始值为 0。
+<ul id="gym-list">...</ul>: 显示 gym 数据的列表。
+Django 模板语法
+{% for gym in gym_data %} ... {% endfor %}: Django 模板语法，遍历 gym_data 列表，并生成每个 gym 的列表项。
+{{ gym.name }}, {{ gym.pool_people }}, {{ gym.gym_people }}: Django 模板变量，显示 gym 的名称、游泳池和健身房的人数。
 
 -->
