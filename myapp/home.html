@@ -111,6 +111,7 @@ index：当前元素的索引（可选）。
 array：原数组（可选）。
 特点：forEach 方法只能用于数组，不能中途停止（不能用 break 或 return 跳出循环）。
 ---
+
 gymList.append(`
                         <li>
                             <strong>${gym.name}</strong><br>
@@ -120,31 +121,53 @@ gymList.append(`
                     `);
 gymList.append:在 jQuery 中，append() 方法用于向选定元素的末尾添加内容。網頁按F12出現的那一堆東西
 ---
+---
+
+function startCountdown() {
+            setInterval(function() {
+                if (countdownValue > 0) {
+                    countdownValue -= 1;
+                } else {
+                    updateGymData();
+                    countdownValue = 10; // 重置倒计时值
+                }
+                $('#countdown').text(countdownValue); // 更新倒计时显示
+            }, 1000); // 每秒更新一次倒计时
+1.setInterval(function() { ... }, 1000);: 这行代码设置了一个定时器，每隔1000毫秒（1秒）运行一次括号内的函数。
+2.if (countdownValue > 0) { countdownValue -= 1; }: 检查countdownValue是否大于0。如果大于0，就将countdownValue减1，这样倒计时每秒减少1秒。
+3.else { updateGymData(); countdownValue = 10; }: 如果countdownValue不大于0（即倒计时已经到0），就调用updateGymData函数来获取并更新健身房数据。更新数据之后，将countdownValue重置为10，开始新的倒计时周期。
+4.$('#countdown').text(countdownValue);: 更新HTML元素（id为countdown）的文本内容，显示当前的countdownValue。这样确保倒计时器在网页上每秒钟更新一次。将 ID 为 countdown 的 HTML 元素的文本内容设置为变量 countdownValue 的值。
+5.
+---
 
 6.updateCount += 1;: 更新次数加 1。
+
 7.$('#update-count').text(updateCount);: 更新页面上显示的更新次数。
 ->使用 jQuery 选择器 $('#update-count') 选中 id 为 update-count 的元素。
 ->.text(updateCount) 将选中元素的文本内容设置为 updateCount 的当前值。
 
 8.$(document).ready(function() {...}): 当文档加载完成时执行的函数。
 ---
+
 $(document).ready(function() {
             // 初次加载时更新数据
             updateGymData();
             // 每分钟更新一次
             setInterval(updateGymData, 10000);
 ---
-->$(document): 这是 jQuery 中的一个函数，它用来选取文档对象（即整个 HTML 文档）。
+->$(document): 確保在 DOM 完全加載後才會執行內部函數。這個函數最先執行，但內部的具體代碼會等到 DOM 完全加載後才執行。
 ->.ready(function() { ... }): 这是 $(document) 对象的一个方法，用于在文档加载完成后执行指定的函数。它的作用是等待页面的所有元素加载完成后再执行函数内的代码。
 ->function() { ... }: 这是一个匿名函数（或者叫回调函数），定义了在文档加载完成后要执行的具体代码块。
-->updateGymData();: 呼叫這個函數，是要重复执行的
-->setInterval 是 JavaScript 提供的一个函数，用于按照指定的时间间隔重复执行指定的函数或代码块。
-->10000 是指定的时间间隔，单位是毫秒。在这里，设定为 10000 毫秒，即每隔 10 秒执行一次 updateGymData 函数。
+->updateGymData();: 當 DOM 完全加載後，$(document).ready(function() {...}); 內的代碼首先會調用 updateGymData() 函數。這個函數負責從服務器獲取數據並更新網頁內容。
+->setInterval(updateGymData, 10000);: 在 updateGymData() 調用完成後，setInterval(updateCountdown, 1000) 會開始執行。setInterval 設置了一個定時器，每秒（1000 毫秒）調用一次 updateCountdown() 函數。
+9.updateGymData();: setInterval 內部的匿名函數每秒會執行一次 updateCountdown() 函數。這個函數負責減少倒計時值，並在倒計時結束時重新調用 updateGymData() 函數。
 
-*->作用是确保在文档加载完成后再执行包裹的函数内的代码，大概就是整個網頁加載完畢，就會開始這段程式碼
-
-9.updateGymData();: 初次加载时调用 updateGymData 函数。
-10.setInterval(updateGymData, 10000);: 每 10 秒钟调用一次 updateGymData 函数，定期更新数据。
+---
+當 DOM 加載完成後，$(document).ready(function() {...}); 內的代碼會執行。
+updateGymData() 會首先被調用以更新數據。
+setInterval(updateCountdown, 1000) 會啟動倒計時，每秒調用一次 updateCountdown()。
+每秒執行的 updateCountdown() 函數會減少倒計時值，並在倒計時結束時重新調用 updateGymData()。
+---
 
 ---
 HTML 模板部分解释
