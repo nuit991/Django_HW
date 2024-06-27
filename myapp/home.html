@@ -22,10 +22,11 @@
                         </li>
                     `);
                 });
-                updateCount += 1;  // 增加更新次数
-                $('#update-count').text(updateCount);  // 更新页面上的显示次数
-                countdownValue = 10; // 重置倒计时值
+            updateCount += 1;  // 增加更新次数
+            $('#update-count').text(updateCount);  // 更新页面上的显示次数
+            countdownValue = 10; // 重置倒计时值  
             });
+            
         }
 
         function startCountdown() {
@@ -36,15 +37,17 @@
                     updateGymData();
                     countdownValue = 10; // 重置倒计时值
                 }
-                $('#countdown').text(countdownValue); // 更新倒计时显示
+                $('#countdown').text(countdownValue <= 0 ? 10 : countdownValue); // 更新倒计时显示
             }, 1000); // 每秒更新一次倒计时
+
+            
         }
 
         $(document).ready(function() {
-            // 初次加载时更新数据
-            updateGymData();
             // 开始倒计时
             startCountdown();
+            // 初次加载时更新数据
+            updateGymData();
         });
     </script>
 </head>
@@ -63,6 +66,7 @@
     </ul>
 </body>
 </html>
+
 
 
 
@@ -131,13 +135,14 @@ function startCountdown() {
                     updateGymData();
                     countdownValue = 10; // 重置倒计时值
                 }
-                $('#countdown').text(countdownValue); // 更新倒计时显示
+                $('#countdown').text(countdownValue <= 0 ? 10 : countdownValue); // 更新倒计时显示
             }, 1000); // 每秒更新一次倒计时
 1.setInterval(function() { ... }, 1000);: 这行代码设置了一个定时器，每隔1000毫秒（1秒）运行一次括号内的函数。
 2.if (countdownValue > 0) { countdownValue -= 1; }: 检查countdownValue是否大于0。如果大于0，就将countdownValue减1，这样倒计时每秒减少1秒。
 3.else { updateGymData(); countdownValue = 10; }: 如果countdownValue不大于0（即倒计时已经到0），就调用updateGymData函数来获取并更新健身房数据。更新数据之后，将countdownValue重置为10，开始新的倒计时周期。
-4.$('#countdown').text(countdownValue);: 更新HTML元素（id为countdown）的文本内容，显示当前的countdownValue。这样确保倒计时器在网页上每秒钟更新一次。将 ID 为 countdown 的 HTML 元素的文本内容设置为变量 countdownValue 的值。
-5.
+4.$('#countdown').text(countdownValue <= 0 ? 10 : countdownValue);: 更新HTML元素（id为countdown）的文本内容，显示当前的countdownValue。这样确保倒计时器在网页上每秒钟更新一次。将 ID 为 countdown 的 HTML 元素的文本内容设置为变量 countdownValue 的值。
+->? 10：這是當條件為 true 時的返回值，即如果 countdownValue 小於或等於 0，返回 10。
+->: countdownValue：這是當條件為 false 時的返回值，即如果 countdownValue 大於 0，返回 countdownValue 自身的值。
 ---
 
 6.updateCount += 1;: 更新次数加 1。
