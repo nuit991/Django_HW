@@ -5,24 +5,46 @@ from .data_scraper import scrape_data
 def home(request):  #当用户第一次访问网站时，Django 会调用这个视图。
     gym_data = scrape_data()
     return render(request, 'home.html', {'gym_data': gym_data})
+   
 
 def gym_data_api(request):  #用于提供动态数据更新的 API 端点。
     gym_data = scrape_data()
     return JsonResponse({'gym_data': gym_data})
 
 
+def index(request):
+    return render(request, 'index.html')
+
+
 
 '''
 from .data_scraper import scrape_data
 ->從data_scraper.py匯入scrape_data這個函式
+---
+
+def home(request):....
 
 return render(request, 'home.html', {'gym_data': gym_data})
 0.用在網頁打開時顯示的項目(粗略來說)
 1.{'gym_data': gym_data}: 是一个字典，它将会传递给模板引擎，用于填充模板中的变量。在这里，'gym_data' 是模板中可以使用的变量名，gym_data 是从 scrape_data() 函数获取的数据。
 2.'home.html': 是要渲染的模板文件的名称或路径
 3.request: 这是一个包含了客户端请求信息的对象。它传递给视图函数，以便视图函数可以根据请求的内容进行处理，并生成相应的 HTML 页面返回给用户。(?)
+---
+
+def gym_data_api(request):....
 
 return JsonResponse({'gym_data': gym_data})
 0.用在動態數值的顯示(粗略來說)
+---
+
+def index(request):...
+
+return render(request, 'index.html')
+1.request: 當前請求對象。
+2.'index.html': 要渲染的模板的名稱。這個模板位於你的 Django 項目的模板目錄中。
+3.（可選）一個字典，包含模板渲染時使用的數據。在這個例子中沒有提供任何數據，所以模板僅僅會被渲染。
+->就像上面的return render(request, 'home.html', {'gym_data': gym_data})
+
+
 
 ''''
