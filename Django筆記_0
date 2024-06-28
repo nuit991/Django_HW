@@ -4,3 +4,12 @@
 urls.py中from .views import home, gym_data_api，會匯入views.py的函式
 進到views.py，from .data_scraper import scrape_data會去跟data_scraper.py拿人數
 
+
+
+2024/06/28
+
+myapp/urls.py
+->path('', index, name = 'index'):
+1.'': 這東西叫做根URL，也就是http://127.0.0.1:8000/，他會顯示所謂的index，index
+->這東西是在myapp/views.py的def index(request):...，然後就會把函數裡的東西丟到網頁上(也就是index.html)
+
