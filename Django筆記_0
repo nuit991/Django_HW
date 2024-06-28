@@ -12,4 +12,6 @@ myapp/urls.py
 ->path('', index, name = 'index'):
 1.'': 這東西叫做根URL，也就是http://127.0.0.1:8000/，他會顯示所謂的index
 ->這東西是在myapp/views.py的def index(request):...，然後就會把函數裡的東西丟到網頁上(也就是index.html)
+2.之後點選畫面上的Go to Gym People Count
+->因為onclick="location.href='{% url 'gym_page' %}'"，myapp/urls.py中的path('gym-page/', home, name = 'gym_page')被使用，顯示myapp/views.py中的home函數內容
 
