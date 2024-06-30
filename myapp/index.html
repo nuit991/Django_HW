@@ -1,53 +1,41 @@
 <!DOCTYPE html>
+<!--這行聲明文件類型為 HTML5。-->
 <html lang="en">
+<!--開頭的 <html> 標籤標誌出文件是 HTML。lang="en" 屬性設定語言為英語。-->    
 <head>
+<!--包含文檔的元數據（例如標題、字符集聲明、外部樣式表或腳本鏈接等）。-->   
     <meta charset="UTF-8">
-    <title>Index Page</title>
+    <!--設定字符編碼為 UTF-8，這是最常用的編碼方式，幾乎可以涵蓋所有語言字符。-->  
+    <title>作業</title>
+    <!--設定網頁標題，會顯示在瀏覽器標籤上。-->
+    <style>
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 按鈕靠左對齊 */
+            padding-left: 10px; /* 給按鈕添加一些左側邊距 */
+        }
+
+        .button-container button {
+            margin: 10px 0; /* 在每個按鈕間添加間距 */
+        }
+    </style>
 </head>
 <body>
+<!--包含網頁的主要內容。-->
     <h1>Welcome to the Gym People Count System</h1>
-    <button onclick="location.href='{% url 'gym_page' %}'">Go to Gym People Count</button>
+    <!--這是一個標題，標示為主標題。-->
+    <div class="button-container">
+        <button onclick="location.href='{% url 'gym_page' %}'">Go to Gym People Count</button>  <!--這是一個按鈕，當按鈕被點擊時，會跳轉到名為 "gym_page" 的URL。-->
+        <!--onclick="location.href='{% url 'gym_page' %}'"：這是一個 JavaScript 事件處理器。當按鈕被點擊時，JavaScript 將設置 location.href（即瀏覽器的當前 URL）為 {% url 'gym_page' %}。
+        {% url 'gym_page' %}: 這是一個 Django 模板標記，它會解析成對應的 URL 路徑。在你的 urls.py 文件中
+        在myapp/urls.py有這樣的一行path('gym-page/', home, name='gym_page')，這樣，{% url 'gym_page' %} 就會被解析成 /gym-page/，用戶點擊按鈕後，瀏覽器將跳轉到該 URL。
+        -->
+        <button onclick="location.href='{% url 'buy_page' %}'">Go to Buy Page</button>
+    </div>
 </body>
 </html>
 
 
-
-<!--
-<!DOCTYPE html>
-這行聲明文件類型為 HTML5。
----
-
-<html lang="en">
-開頭的 <html> 標籤標誌出文件是 HTML。lang="en" 屬性設定語言為英語。
----
-
-<head>
-包含文檔的元數據（例如標題、字符集聲明、外部樣式表或腳本鏈接等）。
----
-
-<meta charset="UTF-8">
-設定字符編碼為 UTF-8，這是最常用的編碼方式，幾乎可以涵蓋所有語言字符。
----
-
-<title>Index Page</title>
-設定網頁標題，會顯示在瀏覽器標籤上。
----
-
-<body>
-包含網頁的主要內容。
----
-
-<h1>Welcome to the Gym People Count System</h1>
-這是一個標題，標示為主標題。
----
-
-<button onclick="location.href='{% url 'gym_page' %}'">Go to Gym People Count</button>: 這是一個按鈕，當按鈕被點擊時，會跳轉到名為 "gym_page" 的URL。
-->onclick="location.href='{% url 'gym_page' %}'"：這是一個 JavaScript 事件處理器。當按鈕被點擊時，JavaScript 將設置 location.href（即瀏覽器的當前 URL）為 {% url 'gym_page' %}。
-->{% url 'gym_page' %}: 這是一個 Django 模板標記，它會解析成對應的 URL 路徑。在你的 urls.py 文件中
--->在myapp/urls.py有這樣的一行path('gym-page/', home, name='gym_page')，這樣，{% url 'gym_page' %} 就會被解析成 /gym-page/，用戶點擊按鈕後，瀏覽器將跳轉到該 URL。
-
-
-
--->
 
 
