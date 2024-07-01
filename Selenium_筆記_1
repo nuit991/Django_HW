@@ -8,3 +8,12 @@ driver = webdriver.Chrome()
 # 方法二：或是直接指定exe檔案路徑
 driver.get("https://24h.pchome.com.tw/") # 更改網址以前往不同網頁
 driver.close() # 關閉瀏覽器視窗
+
+
+
+定位
+# 使用 XPath 定位到搜索欄位
+search_box = driver.find_element(By.XPATH, '//*[@id="root"]/div/header/div/div[1]/div/div/div/div/div[2]/input')
+
+# 在搜索欄位中輸入文字
+search_box.send_keys("iPhone 15 Pro 256G")
