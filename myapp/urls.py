@@ -1,14 +1,21 @@
 from django.urls import path
-from .views import home, gym_data_api, index, buy_page, search_pchome_product_view, search_form_pchome
+#from .views import home, gym_data_api, index, buy_page, search_pchome_product_view, search_form_pchome,search_momo_product_view, search_form_momo
+from . import views
 
 urlpatterns = [
-    path('', index, name = 'index'),  # 這個是你的首頁,
-    path('gym-page/', home, name = 'gym_page'),
-    path('buy-page/', buy_page, name='buy_page'),
-    path('api/gym-data/', gym_data_api, name = 'gym_data_api'),
+    path('', views.index, name = 'index'),  # 這個是你的首頁,
+    path('gym-page/', views.home, name = 'gym_page'),
+    path('buy-page/', views.buy_page, name='buy_page'),
+    path('api/gym-data/', views.gym_data_api, name = 'gym_data_api'),
 
-    path('search-form-pchome/', search_form_pchome, name='search_form_pchome'),
-    path('search-pchome-product/', search_pchome_product_view, name='search_pchome_product'),
+    path('search-form-pchome/', views.search_form_pchome, name='search_form_pchome'),
+    path('search-pchome-product/', views.search_pchome_product_view, name='search_pchome_product'),
+
+    path('search-form-momo/', views.search_form_momo, name='search_form_momo'),
+    path('search-momo-product/', views.search_momo_product_view, name='search_momo_product'),
+
+    path('search-form/', views.search_form, name='search_form_all'),
+    path('search-products/', views.search_products, name='search_products'),
     
 ]
 
