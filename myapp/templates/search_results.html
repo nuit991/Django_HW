@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品搜索結果</title>
+</head>
+<body>
+    <h1>商品搜索結果</h1>
+
+    <h2>PChome 商品</h2>
+    <ul>
+        {% for item in pchome_results %}
+            <li>
+                <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Momo 商品</h2>
+    <ul>
+        {% for item in momo_results %}
+            <li>
+                <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button onclick="window.history.back()">返回搜索</button>
+</body>
+</html>

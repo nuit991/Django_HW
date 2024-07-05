@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MOMO - 商品搜索</title>
+</head>
+<body>
+    <h1>MOMO - 商品搜索</h1>
+    <form action="{% url 'search_momo_product' %}" method="post">
+        <!--HTML 表单中的提交动作由 action 属性定义。-->
+        <!--action="{% url 'search_pchome_product' %}" 指定了表单提交的目标 URL，即与 search_pchome_product 视图函数相关联的 URL。-->
+        <!--
+        輸入完文字->按搜尋->網址變成http://127.0.0.1:8000/search-pchome-product/->呼叫search_pchome_product(這東西在urls.py)
+        ->然後urls.py裡面這一段(path('search-pchome-product/', search_pchome_product_view, name='search_pchome_product'))，會去呼叫search_pchome_product_view函數
+        -->
+        {% csrf_token %}
+        <!--防止跨站请求伪造（CSRF）攻击-->
+
+        <label for="product_name">請輸入要搜索的商品名稱：</label>
+        <input type="text" id="product_name" name="product_name" required>
+        <!--這邊的product_name就是丟給後台的product_name-->
+        <!--通过 request.POST.get('product_name') 可以获取到这个键对应的值-->
+        <button type="submit">搜索</button>
+    </form>
+</body>
+</html>
+
+
+
+
+<!--
+
+1.用户在搜索页面输入商品名称：
+用户在浏览器中打开了包含搜索表单的页面，例如 search_form_pchome.html。
+在页面中，用户输入要搜索的商品名称，并点击了提交按钮。
+
+2..表单提交：
+HTML 表单中的提交动作由 action 属性定义。在这个例子中，action="{% url 'search_pchome_product' %}" 指定了表单提交的目标 URL，即与 search_pchome_product 视图函数相关联的 URL。
+
+3.HTTP POST 请求发送：
+当用户点击搜索按钮时，浏览器会向指定的 URL 发送一个 HTTP POST 请求，请求中包含了用户输入的商品名称数据。
+
+4.后端视图函数处理：
+在 Django 中，search_pchome_product 视图函数会接收到这个 POST 请求。
+视图函数可以通过 request.POST.get('product_name') 获取到用户在输入框中输入的商品名称。
+
+5.搜索逻辑执行：
+视图函数根据获取到的商品名称执行相应的搜索逻辑，可能是调用外部 API、查询数据库或者执行其他必要的操作来获取搜索结果数据。
+
+6.返回响应：
+最终，视图函数会将搜索结果数据传递给 search_results_pchome.html 模板。
+使用 render 函数，视图函数将搜索结果数据作为上下文传递给模板，然后渲染成 HTML 页面。
+渲染完成后，将这个 HTML 页面作为 HTTP 响应发送回用户的浏览器。
+
+7.浏览器展示页面：
+浏览器接收到从后端返回的 HTML 页面响应。
+根据响应的内容，浏览器会切换显示到 search_results_pchome.html 页面，展示搜索结果给用户。
+
+-->

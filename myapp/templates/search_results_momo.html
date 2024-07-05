@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MOMO - 搜索結果</title>
+</head>
+<body>
+    <h1>MOMO - 搜索結果</h1>
+    {% if results %}
+        <ul>
+            {% for item in results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>沒有找到相關商品。</p>
+    {% endif %}
+    <button onclick="window.location.href='{% url 'search_form_momo' %}'">返回搜索页面</button>
+</body>
+</html>
