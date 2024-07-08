@@ -14,8 +14,13 @@ urlpatterns = [
     path('search-form-momo/', views.search_form_momo, name='search_form_momo'),
     path('search-momo-product/', views.search_momo_product_view, name='search_momo_product'),
 
+    path('search-form-yahoo/', views.search_form_yahoo, name='search_form_yahoo'),
+    path('search-yahoo-product/', views.search_yahoo_product_view, name='search_yahoo_product'),
+
     path('search-form/', views.search_form, name='search_form_all'),
     path('search-products/', views.search_products, name='search_products'),
+
+    
     
 ]
 
