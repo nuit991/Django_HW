@@ -25,6 +25,15 @@
         {% endfor %}
     </ul>
 
+    <h2>YAHOO 商品</h2>
+    <ul>
+        {% for item in yahoo_results %}
+            <li>
+                <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
+            </li>
+        {% endfor %}
+    </ul>
+
     <button onclick="window.history.back()">返回搜索</button>
 </body>
 </html>
