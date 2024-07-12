@@ -28,9 +28,8 @@ def search_momo_product(product_name):
 
             # 等待商品列表加載完畢
             item_containers = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "listAreaLi")))
+            #print(item_containers)
 
-
-            # 使用 zip 函數來同時迭代名稱和價格
             for item_container in item_containers[:10]:
                 prd_name = item_container.find_element(By.CLASS_NAME, "prdName").text
                 # 獲取價格
@@ -38,9 +37,16 @@ def search_momo_product(product_name):
                 # 獲取商品連結
                 link_element = item_container.find_element(By.CSS_SELECTOR, "a.goods-img-url")
                 product_url = link_element.get_attribute("href")             
-
                 # 將資料加入到 item_list 中
-                item_list.append((prd_name, product_url, price))
+
+                #抓圖片
+                img_element = item_container.find_element(By.CSS_SELECTOR, "img.prdImg")
+                img_url = img_element.get_attribute("src")
+                #print(img_url)
+                
+
+                item_list.append((prd_name, product_url, price, img_url))
+
 
             return item_list
 
@@ -67,6 +73,9 @@ for item in results:
     print(f"商品名稱: {item[0]}")
     print(f"連結: {item[1]}")
     print(f"價格: {item[2]}")
+    print(f"圖片: {item[3]}")
     print("-" * 20)
-    
+
 '''
+
+
