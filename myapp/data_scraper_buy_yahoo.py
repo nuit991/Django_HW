@@ -64,7 +64,7 @@ def search_yahoo_product(product_name):
             print(f"Retry attempt {attempt}...")
             driver.quit()
 
-
+'''
 
 product_name = '冷氣'
 results = search_yahoo_product(product_name)
@@ -76,3 +76,4 @@ for item in results:
     print(f"價格: {item[2]}")
     print("-" * 20)
 
+'''
