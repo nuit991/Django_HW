@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>搜索結果</title>
+    <title>PChome - 搜索結果</title>
 </head>
 <body>
-    <h1>搜索結果</h1>
-    {% if results %}
+    <h1>PChome - 搜索結果</h1>
+    {% if results %} <!--抓Result的結果-->
         <ul>
             {% for item in results %}
                 <li>
                     <h3>{{ item.0 }}</h3>
                     <p>價格：{{ item.2 }}</p>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
                     <a href="{{ item.1 }}" target="_blank">查看商品</a>
                 </li>
             {% endfor %}
