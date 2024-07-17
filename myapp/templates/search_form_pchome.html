@@ -2,28 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>商品搜索</title>
+    <title>PChome - 商品搜索</title>
+    <style>
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>商品搜索</h1>
+    <h1>PChome - 商品搜索</h1>
     <form action="{% url 'search_pchome_product' %}" method="post">
-        <!--HTML 表单中的提交动作由 action 属性定义。-->
-        <!--action="{% url 'search_pchome_product' %}" 指定了表单提交的目标 URL，即与 search_pchome_product 视图函数相关联的 URL。-->
-        <!--
-        輸入完文字->按搜尋->網址變成http://127.0.0.1:8000/search-pchome-product/->呼叫search_pchome_product(這東西在urls.py)
-        ->然後urls.py裡面這一段(path('search-pchome-product/', search_pchome_product_view, name='search_pchome_product'))，會去呼叫search_pchome_product_view函數
-        -->
         {% csrf_token %}
-        <!--防止跨站请求伪造（CSRF）攻击-->
+        
+        <div class="form-group">
+            <label for="product_name">請輸入要搜索的商品名稱：</label>
+            <input type="text" id="product_name" name="product_name" required>
+        </div>
 
-        <label for="product_name">請輸入要搜索的商品名稱：</label>
-        <input type="text" id="product_name" name="product_name" required>
-        <!--這邊的product_name就是丟給後台的product_name-->
-        <!--通过 request.POST.get('product_name') 可以获取到这个键对应的值-->
+        <div class="form-group">
+            <label for="scroll_count">請輸入滾動次數：</label>
+            <input type="number" id="scroll_count" name="scroll_count" value="5" min="1" required>
+        </div>
+
         <button type="submit">搜索</button>
     </form>
 </body>
 </html>
+
 
 
 
