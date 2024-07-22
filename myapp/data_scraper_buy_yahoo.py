@@ -47,22 +47,69 @@ def search_yahoo_product(product_name):
                 try:
                     # 提取商品名稱
                     prd_name = product.find('span', class_='sc-dlyefy sc-gKcDdr sc-1drl28c-5 jHwfYO ikfoIQ jZWZIY').text.strip()
-                    # 提取商品 URL
-                    url = product['href']
-                    # 提取商品價格
+                    # 提取商品 price
                     price = product.find('span', class_='sc-dlyefy sc-gKcDdr dfRcqf hFXgfs').text.strip()
+                    # 提取商品 url
+                    url = product['href']
+                    # 提取商品 圖片
+                    #使用一個一個點進商品來抓的方式
+                    if url:
+                        try:
+                            driver.get(url) 
+                            html = driver.page_source
+                            soup = BeautifulSoup(html, 'html.parser')
+                            #print(soup)
+                            img_wrapper = soup.find('div', class_='LensImage__imgWrapper___SXnau')
+                            #print(img_wrapper)
+                            img_urls = []
+                            if img_wrapper:
+                                img_tags = img_wrapper.find_all('img')
+                                for img in img_tags:
+                                    img_url = img.get('src')
+                                    if img_url and img_url.endswith('.jpg'):
+                                        img_urls.append(img_url)
 
-                    # 提取商品圖片
-                    img_tag = product.find('img')
-                    img_src = img_tag.get('src') if img_tag else None
-                    if img_src and img_src.endswith('.jpg'):
-                        item_list.append((prd_name, url, price, img_src))
-
+                            if not img_urls:   # 這樣寫的話 img_urls 表示為empty or False，如果是寫 if img_urls == None則是只有表示為None
+                                img_wrapper = soup.find_all('span', class_='ImageHover__thumbnail___1YTO5')
+                                if img_wrapper:
+                                    img_tags = img_wrapper[1]
+                                    img_tags_1 = img_tags.find_all('img')
+                                    for img in img_tags_1:
+                                        img_url = img.get('src')
+                                        if img_url and img_url.endswith('.jpg'):
+                                            img_urls.append(img_url)
+                                            
+                            #print(img_tags)
+                            #print(img_urls)
+                            #print('\n')
+                        except AttributeError as e:
+                            print(f"Error extracting product details: {str(e)}")
+                        #product_span = product_img.find('span', class_='ImageHover__thumbnail___1YTO5')
+                        #print(product_span)
+                        # 提取商品價格
+    
+                    item_list.append((prd_name, url, price, img_urls))
                 except AttributeError as e:
                     print(f"Error extracting product details: {str(e)}")
 
             driver.quit()
-            return item_list
+
+
+            #這邊處理[123,[ABC]]的問題
+            flattened_data = []
+            # 遍历原始数据
+            for item in item_list:
+                prd_name, url, price, img_urls = item
+                if isinstance(img_urls, list) and img_urls:
+                    # 提取列表中的第一个图片 URL
+                    img_url = img_urls[0]
+                else:
+                    img_url = img_urls  # 如果已经是字符串，直接使用
+    
+                # 将扁平化后的数据项添加到新的列表中
+                flattened_data.append((prd_name, url, price, img_url))
+
+            return flattened_data
 
         except Exception as e:
             print(f"Exception occurred: {str(e)}")
@@ -76,6 +123,7 @@ def search_yahoo_product(product_name):
 '''
 product_name = '手機殼'
 results = search_yahoo_product(product_name)
+
 
 # 輸出搜索結果
 for item in results:
