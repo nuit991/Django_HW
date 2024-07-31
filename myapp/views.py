@@ -61,11 +61,18 @@ def search_momo_product_view(request):
     if request.method == 'POST':
         #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
         product_name = request.POST.get('product_name')
+        max_pages = int(request.POST.get('max_pages', 5))
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
-        results = scrape_momo_product(product_name)
+        results, total_items = scrape_momo_product(product_name, max_pages)
+
+        context = {
+            'results': results,
+            'total_items': total_items,
+        }
+        
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
-        return render(request, 'search_results_momo.html', {'results': results})
+        return render(request, 'search_results_momo.html', context)
         #簡單來說results的結果會套用到search_results_pchome.html裡面
     return render(request, 'search_form_momo.html')
     #一開始一定會先進到這條，因為if request.method == 'POST'拿不到值，等到User輸入搜尋的商品
@@ -80,11 +87,18 @@ def search_yahoo_product_view(request):
     if request.method == 'POST':
         #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
         product_name = request.POST.get('product_name')
+        max_pages = int(request.POST.get('max_pages', 5))
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
-        results = scrape_yahoo_product(product_name)
+        results, len_item_list = scrape_yahoo_product(product_name, max_pages)
+        
+        context = {
+            'results': results,
+            'len_item_list': len_item_list,
+        }
+        
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
-        return render(request, 'search_results_yahoo.html', {'results': results})
+        return render(request, 'search_results_yahoo.html', context) #{'results': context})不能這樣寫，這樣傳給前端會是字典，直接寫context就好
         #簡單來說results的結果會套用到search_results_pchome.html裡面
     return render(request, 'search_form_yahoo.html')
     #一開始一定會先進到這條，因為if request.method == 'POST'拿不到值，等到User輸入搜尋的商品
@@ -132,7 +146,7 @@ def pagination_result(request):
 
 
 
-'''.
+'''
 python manage.py runserver
 
 

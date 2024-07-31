@@ -20,6 +20,13 @@ urlpatterns = [
     path('search-form/', views.search_form, name='search_form_all'),
     path('search-products/', views.search_products, name='search_products'),
 
+
+    path('pagination_search/', views.pagination_search, name='pagination_search'),
+    path('pagination_result/', views.pagination_result, name='pagination_result'),
+
+
+    
+
     
     
 ]

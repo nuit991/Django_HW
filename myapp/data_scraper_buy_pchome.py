@@ -95,7 +95,7 @@ def search_pchome_product(product_name, scroll_count):
     print("Reached maximum retries. Returning empty list.")
     return []
 
-'''
+
 
 product_name = '冷氣'
 scroll_count = 1
@@ -111,4 +111,3 @@ for item in results:
     print(f"图片: {item[3]}")
     print("-" * 20)
 
-'''
