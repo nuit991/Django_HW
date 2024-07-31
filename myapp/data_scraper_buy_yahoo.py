@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
 
-
+#初始化瀏覽器
 def setup_driver():
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # For headless mode
@@ -17,7 +17,7 @@ def setup_driver():
     driver = webdriver.Chrome(options=chrome_options)
     return driver
 
-
+#輸入商品名稱後Enter
 def search_product_on_yahoo(driver, product_name):
     driver.get("https://tw.buy.yahoo.com/")
     driver.implicitly_wait(10)
@@ -26,12 +26,12 @@ def search_product_on_yahoo(driver, product_name):
     search_box.send_keys(Keys.ENTER)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a.sc-1drl28c-1.cnHJYW')))
 
-    # 第1次更新權商品網址
+    # 第1次更新全商品網址
     current_url = driver.current_url
 
     return current_url
 
-
+#頁面滾到底，不然有些商品不會顯示
 def scroll_to_bottom(driver):
     scroll_step = 1000
     while True:
@@ -40,13 +40,13 @@ def scroll_to_bottom(driver):
         if driver.execute_script("return window.innerHeight + window.scrollY") >= driver.execute_script("return document.body.scrollHeight"):
             break
 
-
+#顯示商品數量，然後提取名稱 / Url / 金額 / 圖片
 def extract_product_info(driver, current_page):
     html_content = driver.page_source
     soup = BeautifulSoup(html_content, 'html.parser')
     product_elements = soup.find_all('a', class_='sc-1drl28c-1 cnHJYW')
     
-    # 打印当前页的产品数量
+    # 打印當成商品數量
     if current_page == 6:
         print(f"Page {current_page}: {len(product_elements)} products found.")
     else:
@@ -98,7 +98,7 @@ def extract_product_info(driver, current_page):
             flattened_data.append((prd_name, url, price, img_url))
     return flattened_data
 
-
+#圖片要點進去抓，多寫一個def
 def extract_product_images(driver, product_url):
     img_urls = []
     try:
@@ -121,11 +121,13 @@ def extract_product_images(driver, product_url):
         print(f"Error: {str(e)}")
     return img_urls
 
-
+#點下一頁
 def click_next_page(driver, current_page):
     try:
+        #網站點到第4頁，第5頁他的current_page會保持在4
         if current_page == 4:
             css_selector = f'#isoredux-root > div.page.shopping.disableUserSelectInTouchDevice.Layout_layoutBg_3R7Zt > div:nth-child(1) > div.pageFlex > div > div.Pagination_pagination_uC5J7 > div > div > a:nth-child({current_page})'
+        #用兩個判斷是確定他會在current_page = 4之前套用
         if current_page != 4 and current_page < 4:
             css_selector = f'#isoredux-root > div.page.shopping.disableUserSelectInTouchDevice.Layout_layoutBg_3R7Zt > div:nth-child(1) > div.pageFlex > div > div.Pagination_pagination_uC5J7 > div > div > a:nth-child({current_page + 1})'
         element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector)))
@@ -138,19 +140,19 @@ def click_next_page(driver, current_page):
         print(f"Failed to click on page {current_page + 1} button: {str(e)}")
         return False
 
-
+#主要程式
 def search_yahoo_product(product_name, max_page):
-    retries = 100
+    retries = 10
     attempt = 0
     item_list = []
-    
+    #若有問題會重試
     while attempt < retries:
         try:
             driver = setup_driver()
             search_product_on_yahoo(driver, product_name)
             current_page = 1
             
-
+            #User決定要抓取的最大頁數
             while current_page <= max_page:
                 #往下滑
                 scroll_to_bottom(driver)
@@ -160,7 +162,7 @@ def search_yahoo_product(product_name, max_page):
                 item_list.extend(product_info)
                 if current_page == 1:
                     current_url =  search_product_on_yahoo(driver, product_name) #返回current_url(會再重複一次輸入商品名稱然後按下搜尋的動作)
-                    print(current_url)
+                    #print(current_url)
                     #回到全品商品的那一頁
                     driver.get(current_url)
                     #按下一頁
