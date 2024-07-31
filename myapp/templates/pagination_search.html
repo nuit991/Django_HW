@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品搜索_All</title>
+</head>
+<body>
+    <h1>商品搜索_All</h1>
+    <form action="{% url 'pagination_result' %}" method="post">
+        {% csrf_token %}
+        <label for="product_name">請輸入要搜索的商品名稱：</label>
+        <input type="text" id="product_name" name="product_name" required>
+        <button type="submit">搜索</button>
+    </form>
+</body>
+</html>

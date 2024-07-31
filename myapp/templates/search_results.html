@@ -9,7 +9,7 @@
 
     <h2>PChome 商品</h2>
     <ul>
-        {% for item in pchome_results %}
+        {% for item in pchome_results %}  <!--直接指定PChome搜尋給的結果-->
             <li>
                 <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
             </li>
@@ -25,7 +25,7 @@
         {% endfor %}
     </ul>
 
-    <h2>YAHOO 商品</h2>
+    <h2>YAHOO - 搜索結果</h2>
     <ul>
         {% for item in yahoo_results %}
             <li>
