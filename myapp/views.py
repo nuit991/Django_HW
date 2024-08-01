@@ -111,17 +111,30 @@ def search_form(request):
 
 def search_products(request):
     if request.method == 'POST':
-        product_name = request.POST.get('product_name')
 
-        pchome_results = scrape_pchome_product(product_name)
-        momo_results = scrape_momo_product(product_name)
-        yahoo_results = scrape_yahoo_product(product_name)
+            product_name_pchome = request.POST.get('product_name_pchome')
+            scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
 
-        return render(request, 'search_results.html', {
-            'pchome_results': pchome_results, #抓到的值會丟到網頁上
-            'momo_results': momo_results,
-            'yahoo_results': yahoo_results,
-        })
+            product_name_momo = request.POST.get('product_name_momo')
+            max_pages_momo = int(request.POST.get('momo_max_pages', 5))
+
+            product_name_yahoo = request.POST.get('product_name_yahoo')
+            max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
+
+            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, scroll_count_pchome)
+            momo_results, len_item_list_momo = scrape_momo_product(product_name_momo, max_pages_momo)
+            yahoo_results, len_item_list_yahoo = scrape_yahoo_product(product_name_yahoo, max_pages_yahoo)
+
+            context = {
+                'pchome_results': pchome_results,
+                'len_item_list_pchome': len_item_list_pchome,
+                'momo_results': momo_results,
+                'len_item_list_momo': len_item_list_momo,
+                'yahoo_results': yahoo_results,
+                'len_item_list_yahoo': len_item_list_yahoo,
+            }
+
+            return render(request, 'search_results.html', context)
     return render(request, 'search_form_all.html')
 
 
@@ -130,21 +143,34 @@ def pagination_search(request):
 
 def pagination_result(request):
     if request.method == 'POST':
-        product_name = request.POST.get('product_name')
 
-        pchome_results = scrape_pchome_product(product_name)
-        momo_results = scrape_momo_product(product_name)
-        yahoo_results = scrape_yahoo_product(product_name)
+            product_name_pchome = request.POST.get('product_name_pchome')
+            scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
 
-        return render(request, 'pagination_result.html', {
-            'pchome_results': pchome_results, #抓到的值會丟到網頁上
-            'momo_results': momo_results,
-            'yahoo_results': yahoo_results,
-        })
-    return render(request, 'pagination_search.html')
+            product_name_momo = request.POST.get('product_name_momo')
+            max_pages_momo = int(request.POST.get('momo_max_pages', 5))
 
+            product_name_yahoo = request.POST.get('product_name_yahoo')
+            max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
 
+            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, scroll_count_pchome)
+            momo_results, len_item_list_momo = scrape_momo_product(product_name_momo, max_pages_momo)
+            yahoo_results, len_item_list_yahoo = scrape_yahoo_product(product_name_yahoo, max_pages_yahoo)
 
+            context = {
+                'pchome_results': pchome_results,
+                'len_item_list_pchome': len_item_list_pchome,
+                'momo_results': momo_results,
+                'len_item_list_momo': len_item_list_momo,
+                'yahoo_results': yahoo_results,
+                'len_item_list_yahoo': len_item_list_yahoo,
+            }
+
+            return render(request, 'search_results.html', context)
+    return render(request, 'search_form_all.html')
+
+def test_buttons(request):
+    return render(request, 'test_buttons.html')
 
 '''
 python manage.py runserver

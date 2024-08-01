@@ -24,7 +24,7 @@ urlpatterns = [
     path('pagination_search/', views.pagination_search, name='pagination_search'),
     path('pagination_result/', views.pagination_result, name='pagination_result'),
 
-
+    path('test-buttons/', views.test_buttons, name='test_buttons'),
     
 
     

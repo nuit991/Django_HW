@@ -142,9 +142,11 @@ def click_next_page(driver, current_page):
 
 #主要程式
 def search_yahoo_product(product_name, max_page):
+    driver = None
     retries = 10
     attempt = 0
     item_list = []
+    len_item_list = 0
     #若有問題會重試
     while attempt < retries:
         try:
