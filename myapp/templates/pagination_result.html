@@ -28,10 +28,14 @@
     
     <div id="page1" class="page active">
         <h1><a href="https://24h.pchome.com.tw/" target="_blank">PChome - 商品結果</a></h1>
+        <p>找到 {{ len_item_list_pchome }} 個商品</p>
         <ul>
             {% for item in pchome_results %}
                 <li>
-                    <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
                 </li>
             {% endfor %}
         </ul>
@@ -39,26 +43,34 @@
     
     <div id="page2" class="page">
         <h1><a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank">Momo - 商品結果</a></h1>
-        <ul>
-            {% for item in momo_results %}
-                <li>
-                    <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
-                </li>
-            {% endfor %}
-        </ul>
+        <p>找到 {{ len_item_list_momo }} 個商品</p>
+            <ul>
+                {% for item in momo_results %}
+                    <li>
+                        <h3>{{ item.0 }}</h3>
+                        <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                        <p>價格：{{ item.2 }}</p>
+                        <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                    </li>
+                {% endfor %}
+            </ul>
     </div>
     
     <div id="page3" class="page">
         <h1><a href="https://tw.buy.yahoo.com/" target="_blank">YAHOO - 商品結果</a></h1>
-        <ul>
-            {% for item in yahoo_results %}
-                <li>
-                    <a href="{{ item.1 }}" target="_blank">{{ item.0 }}</a> - {{ item.2 }}
-                </li>
-            {% endfor %}
-        </ul>
+        <p>找到 {{ len_item_list_yahoo }} 個商品</p>
+            <ul>
+                {% for item in yahoo_results %}
+                    <li>
+                        <h3>{{ item.0 }}</h3>
+                        <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                        <p>價格：{{ item.2 }}</p>
+                        <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                    </li>
+                {% endfor %}
+            </ul>
     </div>
-    
+    <!--showPage函數，點擊按鈕就會跳到對應的數字頁面-->
     <script>
         function showPage(pageNumber) {
             var pages = document.querySelectorAll('.page');

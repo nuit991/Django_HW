@@ -2,45 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PChome - 搜索結果</title>
-    <style>
-        .product-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 20px; /* 设置列与列之间的间距 */
-        }
-        .product-item {
-            width: 19%; /* 每行显示5个，所以宽度为 100% / 5 = 20% */
-            padding: 10px;
-            box-sizing: border-box;
-            
-        }
-        .product-item img {
-            max-width: 100%;
-            height: auto;
-        }
-
-
-    </style>
+    <title>PChome - 搜索結果</title><!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>PChome - 搜索結果</title>
+        <style>
+            .product-row {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 20px; /* 设置列与列之间的间距 */
+            }
+            .product-item {
+                width: 19%; /* 每行显示5个，所以宽度为 100% / 5 = 20% */
+                padding: 10px;
+                box-sizing: border-box;
+                
+            }
+            .product-item img {
+                max-width: 100%;
+                height: auto;
+            }
+    
+    
+        </style>
+    </head>
+    <body>
+        <h1>PChome - 搜索結果</h1>
+        <p>找到 {{ total_items }} 個商品</p>
+        {% if results %}
+            <div class="product-row">
+                {% for item in results %}
+                    <div class="product-item">
+                        <h3>{{ item.0 }}</h3>
+                        <p>價格：{{ item.2 }}</p>
+                        <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                        <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                    </div>
+                    {% if forloop.counter|divisibleby:5 and not forloop.last %}
+                        </div><div class="product-row">
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>沒有找到相關商品。</p>
+        {% endif %}
+        <button onclick="window.location.href='{% url 'search_form_pchome' %}'">返回搜索页面</button>
+    </body>
+    </html>
+    
 </head>
 <body>
     <h1>PChome - 搜索結果</h1>
-    <p>找到 {{ total_items }} 個商品</p>
-    {% if results %}
-        <div class="product-row">
+    {% if results %} <!--抓Result的結果-->
+        <ul>
             {% for item in results %}
-                <div class="product-item">
+                <li>
                     <h3>{{ item.0 }}</h3>
                     <p>價格：{{ item.2 }}</p>
-                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
                     <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                </div>
-                {% if forloop.counter|divisibleby:5 and not forloop.last %}
-                    </div><div class="product-row">
-                {% endif %}
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% else %}
         <p>沒有找到相關商品。</p>
     {% endif %}

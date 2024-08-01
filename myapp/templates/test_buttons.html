@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按钮测试</title>
+    <style>
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>测试按钮功能</h1>
+
+    <div class="buttons">
+        <button onclick="showPage(1)">PChome</button>
+        <button onclick="showPage(2)">Momo</button>
+        <button onclick="showPage(3)">YAHOO</button>
+    </div>
+    
+    <div id="page1" class="page active">
+        <h2>PChome 内容</h2>
+        <p>这是PChome的内容。</p>
+    </div>
+    
+    <div id="page2" class="page">
+        <h2>Momo 内容</h2>
+        <p>这是Momo的内容。</p>
+    </div>
+    
+    <div id="page3" class="page">
+        <h2>YAHOO 内容</h2>
+        <p>这是YAHOO的内容。</p>
+    </div>
+    
+    <script>
+        function showPage(pageNumber) {
+            var pages = document.querySelectorAll('.page');
+            pages.forEach(function(page) {
+                page.classList.remove('active');
+            });
+            document.getElementById('page' + pageNumber).classList.add('active');
+        }
+    </script>
+</body>
+</html>
