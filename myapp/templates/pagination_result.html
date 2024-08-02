@@ -6,30 +6,40 @@
     <title>全部搜尋</title>
     <style>
         .page {
-            display: none;
+            display: none;  /* 默认隐藏页面 */
         }
         .page.active {
-            display: block;
+            display: block;  /* 仅显示活跃的页面 */
         }
         .buttons {
-            margin-top: 20px;
+            margin-top: 20px;  /* 按钮组的上边距 */
         }
         .buttons button {
-            margin-right: 10px;
+            margin-right: 10px;  /* 每个按钮的右边距 */
+        }
+        .results {
+            display: flex;  /* 使用 flex 布局 */
+            flex-wrap: wrap;  /* 确保当子元素超出容器宽度时，它们会自动换行。 */
+        }
+        .results li {
+            width: 20%;  /* 设置 width: 20% 确保每个 li 项的宽度占容器的 20%，从而每行可以显示 5 个项目。 */
+            box-sizing: border-box;  /* 括内边距和边框在宽度和高度的计算中，这样可以更好地控制布局。 */
+            padding: 10px;  /* 为每个项目添加内边距，使其内容与边框之间有间距。 */
+            list-style: none;  /* 移除默认的列表项样式，使列表项不显示前面的点或数字。 */
         }
     </style>
 </head>
 <body>
     <div class="buttons">
-        <button onclick="showPage(1)">PChome</button>
+        <button onclick="showPage(1)">PChome</button><!--網頁上按鈕，表示 PChome 的搜索结果页面，用來顯示想要的畫面-->
         <button onclick="showPage(2)">Momo</button>
         <button onclick="showPage(3)">YAHOO</button>
     </div>
     
-    <div id="page1" class="page active">
+    <div id="page1" class="page active"> <!--繼承上面按鈕部分，點上面的按鈕就會跑到這邊-->
         <h1><a href="https://24h.pchome.com.tw/" target="_blank">PChome - 商品結果</a></h1>
         <p>找到 {{ len_item_list_pchome }} 個商品</p>
-        <ul>
+        <ul class="results">
             {% for item in pchome_results %}
                 <li>
                     <h3>{{ item.0 }}</h3>
@@ -44,41 +54,91 @@
     <div id="page2" class="page">
         <h1><a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank">Momo - 商品結果</a></h1>
         <p>找到 {{ len_item_list_momo }} 個商品</p>
-            <ul>
-                {% for item in momo_results %}
-                    <li>
-                        <h3>{{ item.0 }}</h3>
-                        <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
-                        <p>價格：{{ item.2 }}</p>
-                        <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                    </li>
-                {% endfor %}
-            </ul>
+        <ul class="results">
+            {% for item in momo_results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
     
     <div id="page3" class="page">
         <h1><a href="https://tw.buy.yahoo.com/" target="_blank">YAHOO - 商品結果</a></h1>
         <p>找到 {{ len_item_list_yahoo }} 個商品</p>
-            <ul>
-                {% for item in yahoo_results %}
-                    <li>
-                        <h3>{{ item.0 }}</h3>
-                        <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
-                        <p>價格：{{ item.2 }}</p>
-                        <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                    </li>
-                {% endfor %}
-            </ul>
+        <ul class="results">
+            {% for item in yahoo_results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
-    <!--showPage函數，點擊按鈕就會跳到對應的數字頁面-->
+    
+    <!--處裡按鈕-->
     <script>
         function showPage(pageNumber) {
-            var pages = document.querySelectorAll('.page');
-            pages.forEach(function(page) {
-                page.classList.remove('active');
+            var pages = document.querySelectorAll('.page'); // 获取所有具有 'page' 类的元素（即所有页面部分）
+            pages.forEach(function(page) { // 遍历每个页面部分
+                page.classList.remove('active');  /* 移除所有页面的 active 类 */
             });
-            document.getElementById('page' + pageNumber).classList.add('active');
+            
+            var targetPage = document.getElementById('page' + pageNumber); // 获取特定页面部分的元素，该页面的 ID 是 'page' 加上传入的 pageNumber 参数，誰被點到誰就會賦予active類(就會顯示出來)
+            targetPage.classList.add('active');  // 为目标页面部分添加 'active' 类，这样它就会显示出来
         }
     </script>
 </body>
 </html>
+
+
+
+
+<!--
+註解:
+targetPage.classList.add('active');  // 为目标页面部分添加 'active' 类，这样它就会显示出来
+1.在前端开发中，为目标页面部分添加 active 类的主要目的是控制页面元素的显示和隐藏。这个 active 类的添加和移除操作实现了不同内容区域的切换。
+
+------
+分別顯示畫面流程
+
+1.一開始先隱藏所有帶有page類元素(pchome / momo / yahoo都有帶page類)
+.page {display: none;} <--用這個程式
+这里，.page 类的默认样式是 display: none，意味着所有带有 page 类的元素最初都是隐藏的。.page.active 类则将 display 设置为 block，使得只有带有 active 类的页面元素会显示出来。
+---
+2.點擊按鈕，觸發function showPage(pageNumber)函式，會移除所有页面的 active 类，加上前面已經隱藏所有帶有page類元素，所以不會有任何畫面顯示
+2-1.var targetPage = document.getElementById('page' + pageNumber); 這邊獲取剛剛點的那個按鈕的元素
+2-2.targetPage.classList.add('active'); 這邊給予active類讓被點擊的元素可以顯示
+.page.active {display: block;}<--用這個程式
+使得只有带有 active 类的页面元素会显示出来。
+---
+
+以上處理就可以達到點擊按鈕才顯示頁面的結果
+
+EX:
+添加和移除 active 类使得页面能根据用户的交互动态更新。
+用户点击 "PChome" 按钮时，showPage(1) 函数会将 page1 设为活动页面（添加 active 类），而隐藏其他页面（移除 active 类）。
+
+------
+
+商品排序方式:
+
+1.
+先設定規則
+.results li {
+    width: 20%;  /* 每行显示 5 个项目 */
+    box-sizing: border-box;  /* 包含内边距和边框 */
+    padding: 10px;  /* 每个项目的内边距 */
+    list-style: none;  /* 移除默认的列表样式 */
+}
+
+2.
+<ul class="results">是一个 ul（无序列表）元素，并且通过添加 class="results"，我们可以使用 CSS 为其子元素（li 项）应用特定的样式。
+商品的內容是夾在<li></li>
+
+-->
