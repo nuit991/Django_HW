@@ -27,6 +27,25 @@
             padding: 10px;  /* 为每个项目添加内边距，使其内容与边框之间有间距。 */
             list-style: none;  /* 移除默认的列表项样式，使列表项不显示前面的点或数字。 */
         }
+        /* 样式用于固定按钮 */
+        .fixed-buttons {
+            position: fixed; /* 固定在视口中 */
+            bottom: 20px; /* 距离视口底部 20px */
+            right: 20px; /* 距离视口右侧 20px */
+            display: flex; /* 使用 flexbox 进行布局 */
+            flex-direction: column; /* 垂直排列按钮 */
+            gap: 10px; /* 按钮之间的间距 */
+        }
+
+        .fixed-button {
+            padding: 10px 20px; /* 内边距 */
+            background-color: #007BFF; /* 背景颜色 */
+            color: white; /* 文字颜色 */
+            border: none; /* 去掉边框 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标悬停时显示手形光标 */
+            font-size: 16px; /* 字体大小 */
+        }
     </style>
 </head>
 <body>
@@ -34,6 +53,13 @@
         <button onclick="showPage(1)">PChome</button><!--網頁上按鈕，表示 PChome 的搜索结果页面，用來顯示想要的畫面-->
         <button onclick="showPage(2)">Momo</button>
         <button onclick="showPage(3)">YAHOO</button>
+    </div>
+
+    <div class="fixed-buttons">
+        
+        <a href="https://24h.pchome.com.tw/" target="_blank" class="fixed-button">PChome</a><!--網頁上按鈕，表示 PChome 的搜索结果页面，用來顯示想要的畫面-->
+        <a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank" class="fixed-button">Momo</a>
+        <a href="https://tw.buy.yahoo.com/" target="_blank" class="fixed-button">YAHOO</a>
     </div>
     
     <div id="page1" class="page active"> <!--繼承上面按鈕部分，點上面的按鈕就會跑到這邊-->

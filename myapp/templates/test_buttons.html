@@ -3,54 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>按钮测试</title>
+    <title>固定按钮示例</title>
     <style>
-        .page {
-            display: none;
+        /* 样式用于固定按钮 */
+        .fixed-buttons {
+            position: fixed; /* 固定在视口中 */
+            bottom: 20px; /* 距离视口底部 20px */
+            right: 20px; /* 距离视口右侧 20px */
+            display: flex; /* 使用 flexbox 进行布局 */
+            flex-direction: column; /* 垂直排列按钮 */
+            gap: 10px; /* 按钮之间的间距 */
         }
-        .page.active {
-            display: block;
-        }
-        .buttons {
-            margin-top: 20px;
-        }
-        .buttons button {
-            margin-right: 10px;
+
+        .fixed-button {
+            padding: 10px 20px; /* 内边距 */
+            background-color: #007BFF; /* 背景颜色 */
+            color: white; /* 文字颜色 */
+            border: none; /* 去掉边框 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标悬停时显示手形光标 */
+            font-size: 16px; /* 字体大小 */
         }
     </style>
 </head>
 <body>
-    <h1>测试按钮功能</h1>
-
-    <div class="buttons">
-        <button onclick="showPage(1)">PChome</button>
-        <button onclick="showPage(2)">Momo</button>
-        <button onclick="showPage(3)">YAHOO</button>
-    </div>
+    <h1>滚动页面测试</h1>
+    <p>滚动页面以查看按钮如何保持在视口中。</p>
+    <!-- 添加一些内容以使页面有滚动条 -->
+    <div style="height: 2000px;"></div>
     
-    <div id="page1" class="page active">
-        <h2>PChome 内容</h2>
-        <p>这是PChome的内容。</p>
+    <!-- 固定按钮容器 -->
+    <div class="fixed-buttons">
+        <a href="https://24h.pchome.com.tw/" target="_blank" class="fixed-button">PChome</a>
+        <button class="fixed-button" onclick="alert('Momo 按钮被点击了!')">Momo</button>
+        <button class="fixed-button" onclick="alert('YAHOO 按钮被点击了!')">YAHOO</button>
     </div>
-    
-    <div id="page2" class="page">
-        <h2>Momo 内容</h2>
-        <p>这是Momo的内容。</p>
-    </div>
-    
-    <div id="page3" class="page">
-        <h2>YAHOO 内容</h2>
-        <p>这是YAHOO的内容。</p>
-    </div>
-    
-    <script>
-        function showPage(pageNumber) {
-            var pages = document.querySelectorAll('.page');
-            pages.forEach(function(page) {
-                page.classList.remove('active');
-            });
-            document.getElementById('page' + pageNumber).classList.add('active');
-        }
-    </script>
 </body>
 </html>
