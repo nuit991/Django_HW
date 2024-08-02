@@ -166,8 +166,8 @@ def pagination_result(request):
                 'len_item_list_yahoo': len_item_list_yahoo,
             }
 
-            return render(request, 'search_results.html', context)
-    return render(request, 'search_form_all.html')
+            return render(request, 'pagination_result.html', context)
+    return render(request, 'pagination_search.html')
 
 def test_buttons(request):
     return render(request, 'test_buttons.html')
