@@ -1,0 +1,20 @@
+後端改變會馬上反應到前端(大概?)
+
+架設步驟
+
+1.首先，确保你已经安装了 Django 和 Django Channels。
+pip install django channels
+
+2.配置 Django Channels
+INSTALLED_APPS = [
+    ...
+    'channels',
+    'myapp',
+]
+
+ASGI_APPLICATION = 'myproject.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
