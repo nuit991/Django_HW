@@ -1,4 +1,10 @@
 把後端東西丟到前端
+流程大綱:
+1.先在views.py新增函式
+2.到urls.py匯入views.py的函式
+3.到template新增html檔案
+
+
 PS:
 這邊不用主畫面(127.0.0.1這個)，是在主畫面增加按鈕來分類
 所以會先在主畫面新增按鈕，以下步驟
@@ -33,6 +39,7 @@ urlpatterns = [
 
 ---
 步驟 3: 創建或修改首頁模板（template）
+這邊就要把上面的 index.html / test_but.html 做出來，檔案要放在myapp/templates 的 folder裡面
 
 
 
