@@ -75,7 +75,7 @@ class CounterConsumer(AsyncWebsocketConsumer):
         for i in range(1, 101):
             if i % 10 == 0:
                 await self.send(text_data=json.dumps({'count': i}))
-            await asyncio.sleep(1)
+            
 
 ---
 6. 创建前端 WebSocket 连接
