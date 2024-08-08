@@ -2,10 +2,13 @@
 
 架設步驟
 
-1.首先，确保你已经安装了 Django 和 Django Channels。
+1.首先，确保你已经安装了 Django 和 Django Channels
+
 pip install django channels
 
+---
 2.配置 Django Channels
+
 INSTALLED_APPS = [
     ...
     'channels',
@@ -18,3 +21,128 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+
+---
+3.创建一个 asgi.py 文件，用于配置 ASGI
+
+# myproject/asgi.py
+import os
+from channels.routing import ProtocolTypeRouter, URLRouter
+from django.core.asgi import get_asgi_application
+from channels.auth import AuthMiddlewareStack
+from myapp import routing
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
+
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            routing.websocket_urlpatterns
+        )
+    ),
+})
+
+---
+4. 配置 WebSocket 路由
+
+# myapp/routing.py
+from django.urls import re_path
+from . import consumers
+
+websocket_urlpatterns = [
+    re_path(r'ws/counter/', consumers.CounterConsumer.as_asgi()),
+]
+
+#這邊的CounterConsumer要跟步驟5的函式名稱一樣
+
+---
+5.创建 WebSocket Consumer
+5-1.這邊做更改的話要重新啟動 daphne
+->daphne -p 9000 Project_1.asgi:application
+
+# myapp/consumers.py
+import asyncio
+from channels.generic.websocket import AsyncWebsocketConsumer
+import json
+
+class CounterConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+        await self.send_counter()
+
+    async def send_counter(self):
+        for i in range(1, 101):
+            if i % 10 == 0:
+                await self.send(text_data=json.dumps({'count': i}))
+            await asyncio.sleep(1)
+
+---
+6. 创建前端 WebSocket 连接
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Counter</title>
+</head>
+<body>
+    <h1>WebSocket Counter</h1>
+    <div id="counter">0</div>
+
+    <script>
+        const counterElement = document.getElementById('counter');
+        const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/counter/');  <!--這邊8000 / 9000 是因為有啟動時的port號是9000-->
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            counterElement.innerText = data.count;
+        };
+
+        socket.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly');
+        };
+    </script>
+</body>
+</html>
+
+---
+7. 启动服务器，要在C:\Users\User\Desktop\Python\Django\Project_1執行
+python manage.py runserver
+daphne -p 9000 Project_1.asgi:application
+
+
+
+
+
+除錯
+進到顯示的頁面進到顯示的頁面，本題:http://127.0.0.1:8000/test_res/
+按F12->Network->WS，看最下面有沒有錯誤
+目前遇到過的問題
+1.daphne的port號跟django一樣
+2.更改之後要顯示結果的html也要更改
+2-1.const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/counter/');
+->8000是默認port號，會跟django port重複，要replace改掉
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
