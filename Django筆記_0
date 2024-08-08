@@ -17,6 +17,24 @@ PS:
 步驟 2: 設置URL路由
 把下面的項目增加到 myapp/urls.py
 
+# urls.py
+from django.urls import path
+from . import views #這個的意思是把當前目錄裡的views.py匯入
 
-準備:
+urlpatterns = [
+    path('', views.index, name='index'),  # 首頁的URL路由
+#''的意思，進到網頁會長這樣http://127.0.0.1:8000/，後面沒有任何字，也就是首頁
+#views.index，意思是套用views.py裡面的函數def index(request)，return render(request, 'index.html') 會回傳'index.html'給前端 
+    path('test-but/', views.test_but, name='test_but'),
+#'test-but/'，進到網頁會長這樣http://127.0.0.1:8000/test-but/，後面就會出現 'test-but'
+#views.test_but，意思是套用views.py裡面的函數 def test_but，return render(request, 'test_but.html') 會回傳'test_but.html'給前端 
+
+]
+
+---
+步驟 3: 創建或修改首頁模板（template）
+
+
+
+
 
