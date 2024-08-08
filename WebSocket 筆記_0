@@ -79,6 +79,7 @@ class CounterConsumer(AsyncWebsocketConsumer):
 
 ---
 6. 创建前端 WebSocket 连接
+6-1.這個要加在要顯示的html裡面
 <!DOCTYPE html>
 <html>
 <head>
