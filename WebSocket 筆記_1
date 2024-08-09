@@ -1,0 +1,9 @@
+1.HTTP 请求（例如使用 Django 视图）：
+
+如果你的前端通过 HTTP 请求获取数据，例如通过 AJAX 或 fetch API，那么前端会向 Django 视图（views.py）发送请求。
+这种方法适用于传统的 HTTP 请求/响应模式，不涉及 WebSocket。
+WebSocket 连接：
+
+
+2.如果你使用 WebSocket 来实时推送数据到前端，那么前端会连接到 Django Channels 的 WebSocket 消费者（例如 consumers_momo.py）。
+WebSocket 适用于实时通信和推送更新，这些更新会在连接建立后持续传输数据。
