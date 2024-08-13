@@ -7,3 +7,26 @@ WebSocket 连接：
 
 2.如果你使用 WebSocket 来实时推送数据到前端，那么前端会连接到 Django Channels 的 WebSocket 消费者（例如 consumers_momo.py）。
 WebSocket 适用于实时通信和推送更新，这些更新会在连接建立后持续传输数据。
+
+
+3.
+前端輸入完商品 / 頁數，呼叫search_results_momo.html，views.py要處理
+views.py只要寫這樣就好，該傳的product_name / max_pages要傳，傳完就直接顯示search_results_momo.html(結果)
+def search_momo_product_view(request):
+    if request.method == 'POST':
+        product_name = request.POST.get('product_name')
+        max_pages = int(request.POST.get('max_pages', 5))
+
+        # 将数据传递给结果模板
+        context = {
+            'product_name': product_name,
+            'max_pages': max_pages
+        }
+    return render(request, 'search_results_momo.html', context)
+
+執行到const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/');會到routing.py呼叫consumers_momo.py裡面的class Momo_Consumer(AsyncWebsocketConsumer):
+這邊注意，如果有回傳值(EX:product_name / max_pages)，要寫一個async def receive(self, text_data)
+class Momo_Consumer(AsyncWebsocketConsumer)
+->async def send_product_data(self, product_name, max_pages):跟def scrape_momo_product要資料
+
+抓完後回傳到前端(暫)
