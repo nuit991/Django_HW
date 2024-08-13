@@ -1,6 +1,7 @@
 後端改變會馬上反應到前端(大概?)
 
 架設步驟
+如果你使用 Django Channels 来处理 WebSocket 连接，那么通常会使用 Daphne 来运行服务器。
 
 1.首先，确保你已经安装了 Django 和 Django Channels
 
