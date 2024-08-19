@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import asyncio
 
 # 初始化浏览器
 def initialize_driver():
@@ -49,26 +50,26 @@ def scroll_and_load_more(driver, scroll_count):
     return item_container
 
 # 抓出商品名称 / Url / 价格 / 图片
-def extract_items(driver, item_container):
+async def extract_items(driver, item_container):
     item_list = []
     list_items_name = item_container.find_elements(By.CLASS_NAME, "prod_name")
     list_items_price = item_container.find_elements(By.CLASS_NAME, "price")
     list_items_picture = item_container.find_elements(By.CLASS_NAME, "prod_img")
 
     for name_element, price_element, picture_element in zip(list_items_name, list_items_price, list_items_picture):
-        item_text = name_element.text.strip()
+        prd_name = name_element.text.strip()
         link_element = name_element.find_element(By.TAG_NAME, "a") if name_element.find_elements(By.TAG_NAME, "a") else None
-        item_url = link_element.get_attribute("href") if link_element else "无链接"
+        product_url = link_element.get_attribute("href") if link_element else "无链接"
 
-        price_text = price_element.text.strip()
-        picture_src = picture_element.find_element(By.TAG_NAME, "img").get_attribute("src")
+        price = price_element.text.strip()
+        img_url = picture_element.find_element(By.TAG_NAME, "img").get_attribute("src")
 
-        item_list.append((item_text, item_url, price_text, picture_src))
+        yield prd_name, product_url, price, img_url
+        await asyncio.sleep(1)  # 模拟数据生成的延迟
 
-    return item_list
 
 # 主程序
-def search_pchome_product(product_name, scroll_count):
+async def search_pchome_product(product_name, scroll_count):
     retries = 5  # 设置最大重试次数
     attempt = 0
 
@@ -78,9 +79,13 @@ def search_pchome_product(product_name, scroll_count):
             search_product(driver, product_name)
             item_container = scroll_and_load_more(driver, scroll_count)
             item_list = extract_items(driver, item_container)
-            total_items = len(item_list)
-            driver.quit()
-            return item_list, total_items
+
+            async for prd_name, product_url, price, img_url in extract_items(driver, item_container):
+                yield prd_name, product_url, price, img_url
+                await asyncio.sleep(1)  
+
+            break
+
 
         except Exception as e:
             print(f"Exception occurred: {str(e)}")
@@ -92,7 +97,7 @@ def search_pchome_product(product_name, scroll_count):
             time.sleep(2)  # 等待2秒再重试
 
     print("Reached maximum retries. Returning empty list.")
-    return [], 0
+
 
 
 '''

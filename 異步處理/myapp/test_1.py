@@ -1,105 +1,85 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 import time
 
-#初始化瀏覽器
+# 初始化浏览器
 def initialize_driver():
     chrome_options = Options()
-    #chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--log-level=3")
     driver = webdriver.Chrome(options=chrome_options)
     return driver
 
-#進到momo商城，輸入商品名稱按下enter
+# 进到Pchome，输入商品名称按下enter
 def search_product(driver, product_name):
-    driver.get("https://www.momoshop.com.tw/main/Main.jsp")
+    driver.get("https://24h.pchome.com.tw/")
     driver.implicitly_wait(10)
-    search_box = driver.find_element(By.XPATH, '//*[@id="keyword"]')
+    search_box = driver.find_element(By.XPATH, '//*[@id="root"]/div/header/div/div[1]/div/div/div/div/div[2]/input')
     search_box.send_keys(product_name)
     search_box.send_keys(Keys.ENTER)
     time.sleep(10)  # 等待页面加载
 
-#用BeautifulSoup抓下整個網頁
-def get_page_content(driver):
-    html_source = driver.page_source
-    soup = BeautifulSoup(html_source, 'html.parser')
-    return soup
+# 滚动页面加载更多产品
+def scroll_and_load_more(driver, scroll_count):
+    item_container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ItemContainer")))
+    scroll_pause_time = 2  # 每次滚动的停顿时间
+    scroll_count_current = 0
+    last_count = 0
 
-#找到商品標籤，抓取名稱 / Url / 價錢 / 圖片
-def parse_product_info(soup):
+    while scroll_count_current < scroll_count:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(scroll_pause_time)
+
+        # 重新获取item_container
+        item_container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ItemContainer")))
+
+        current_count = len(item_container.find_elements(By.CLASS_NAME, "prod_name"))
+        # 如果当前数量与上一次相同，说明页面没有加载更多新商品，则退出循环。
+        if current_count == last_count:
+            break
+        #每次更新商品數量
+        last_count = current_count
+        scroll_count_current += 1
+
+    return item_container
+
+# 抓出商品名称 / Url / 价格 / 图片
+def extract_items(driver, item_container):
     item_list = []
-    item_containers = soup.find_all('li', attrs={'gcode': True})
-    for item_container in item_containers[:2]:
-        prd_name = item_container.find('h3', class_='prdName').text.strip()
-        price = item_container.find('span', class_='price').text.strip()
-        product_url_good = item_container.find('a', class_='goodsUrl')['href']
-        product_url = 'https://www.momoshop.com.tw' + product_url_good
-        img_tag = item_container.find('img', class_='prdImg')
-        img_url = img_tag['src']
-        item_list.append((prd_name, product_url, price, img_url))
+    list_items_name = item_container.find_elements(By.CLASS_NAME, "prod_name")
+    list_items_price = item_container.find_elements(By.CLASS_NAME, "price")
+    list_items_picture = item_container.find_elements(By.CLASS_NAME, "prod_img")
+
+    for name_element, price_element, picture_element in zip(list_items_name, list_items_price, list_items_picture):
+        item_text = name_element.text.strip()
+        link_element = name_element.find_element(By.TAG_NAME, "a") if name_element.find_elements(By.TAG_NAME, "a") else None
+        item_url = link_element.get_attribute("href") if link_element else "无链接"
+
+        price_text = price_element.text.strip()
+        picture_src = picture_element.find_element(By.TAG_NAME, "img").get_attribute("src")
+
+        item_list.append((item_text, item_url, price_text, picture_src))
+
     return item_list
 
-#點下一頁
-def click_next_page(driver, current_page):
-    # 找到下一页按钮并点击
-    page_number = current_page
-    try:
-        #momo下一頁標籤的編號最多到11
-        #要先點下十頁(標籤數字是11)，才能到下10頁，不會點第10頁就自動顯示11、12、13頁...
-        if current_page <= 11:
-            css_selector = f'#BodyBase > div.bt_2_layout.searchbox.searchListArea.selectedtop > div:nth-child(6) > ul > li:nth-child({page_number}) > a'
-            element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector)))
-            element.click()
-            print(f'第{current_page} OK')
-            time.sleep(5)
-            
-            #這邊用page_number = current_page是為了第12頁網頁的標籤數字會變回4，之後丟給else處理
-            page_number = current_page
-        else:
-            #第12頁開始的規律都是(current_page % 10) + 2，current_page是我自己數的，網頁的標籤數字是4
-            page_number = (current_page % 10) + 2
-            css_selector = f'#BodyBase > div.bt_2_layout.searchbox.searchListArea.selectedtop > div:nth-child(6) > ul > li:nth-child({page_number}) > a'
-            # 使用 CSS 選擇器定位元素並點擊
-            element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_selector)))
-            element.click()
-            print(f'第{current_page} OK')
-            time.sleep(5)
-            WebDriverWait(driver, 20).until(EC.staleness_of(element))
-            
-
-    except Exception as e:
-        print(f"No more pages or error occurred: {str(e)}")
-
-
-#主要執行程式
-def search_momo_product(product_name, max_pages):
-    retries = 5
+# 主程序
+def search_pchome_product(product_name, scroll_count):
+    retries = 5  # 设置最大重试次数
     attempt = 0
-    item_list = []
 
-
-    #若失敗的重複迴圈
     while attempt < retries:
         try:
             driver = initialize_driver()
             search_product(driver, product_name)
-            current_page = 1
-            #User決定最大搜尋頁數
-            while current_page <= max_pages:
-                print(f"Scraping page {current_page}...")
-                soup = get_page_content(driver)
-                item_list.extend(parse_product_info(soup))  
-                click_next_page(driver, current_page)
-                current_page += 1
-                time.sleep(5)
+            item_container = scroll_and_load_more(driver, scroll_count)
+            item_list = extract_items(driver, item_container)
             total_items = len(item_list)
-
+            driver.quit()
             return item_list, total_items
 
         except Exception as e:
@@ -109,17 +89,19 @@ def search_momo_product(product_name, max_pages):
 
         finally:
             driver.quit()
-            time.sleep(2)
+            time.sleep(2)  # 等待2秒再重试
 
     print("Reached maximum retries. Returning empty list.")
-    return item_list, total_items
+    return [], 0
 
 
-# 要搜索的商品名称
 product_name = '冷氣'
-results, total_items = search_momo_product(product_name, max_pages=3)
+scroll_count = 1
+results, total_items = search_pchome_product(product_name, scroll_count)
 
-# 输出搜索结果
+print(f"找到 {total_items} 个商品:")
+print("-" * 20)
+
 for item in results:
     print(f"商品名称: {item[0]}")
     print(f"链接: {item[1]}")

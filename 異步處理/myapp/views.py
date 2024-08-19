@@ -41,18 +41,15 @@ def search_pchome_product_view(request):
         scroll_count = int(request.POST.get('scroll_count', 5))
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
-        results, total_items = scrape_pchome_product(product_name, scroll_count)
+        
 
         context = {
-            'results': results,
-            'total_items': total_items,
+            'product_name': product_name,
+            'scroll_count': scroll_count,
         }
 
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
         return render(request, 'search_results_pchome.html', context)
-        #簡單來說results的結果會套用到search_results_pchome.html裡面
-    return render(request, 'search_form_pchome.html')
-    #一開始一定會先進到這條，因為if request.method == 'POST'拿不到值，等到User輸入搜尋的商品
 
 
 def search_form_momo(request):
