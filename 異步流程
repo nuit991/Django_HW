@@ -129,6 +129,7 @@ class Pchome_Consumer(AsyncWebsocketConsumer):
 5.
 修改爬蟲，增加異步處理
 主要是抓資料的部分跟主程式的部分
+記得import asyncio
 
 以Pchome為例:
 
