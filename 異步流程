@@ -1,0 +1,54 @@
+PChome當作範例
+
+1.
+views.py更改
+為了先顯示結果畫面，改成這樣，不用在這邊抓資料，後面會從consumers.py去抓資料
+
+def search_pchome_product_view(request):
+    #request : HTTP 请求的所有信息，在目前情況下進到http://127.0.0.1:8000/search-form-pchome/這個網頁，輸入要搜尋的名稱，這樣就算是一種request (?
+    if request.method == 'POST':
+        #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
+        product_name = request.POST.get('product_name')
+        scroll_count = int(request.POST.get('scroll_count', 5))
+        #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
+        #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
+        
+
+        context = {
+            'results': results,
+            'total_items': total_items,
+        }
+
+        #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
+        return render(request, 'search_results_pchome.html', context)
+
+--------------------
+2.
+urls.py不用更改
+
+--------------------
+3.
+routing.py更改
+
+#这行代码导入了 re_path 函数，它允许使用正则表达式来定义 URL 模式。
+#re_path 是 Django 的 URL 解析器之一，可以更灵活地匹配复杂的 URL 模式。
+from django.urls import re_path
+#. (dot) 代表当前包或模块所在的目录。
+#假設在A Folder下面就要用 from .A
+from . import consumers, consumers_momo
+#这是一个列表，用于存放 WebSocket URL 的路由配置。这个列表会在 Django 的 ASGI 配置中被引用，以确定哪些 URL 应该由哪些 WebSocket 消费者处理。
+websocket_urlpatterns = [
+    #这个 URL 模式使用了 re_path 函数，并定义了一个 WebSocket 路由。
+    #r'ws/counter/': 这是一个原始字符串（原始字符串以 r 开头），它定义了匹配的 URL 模式。在这个例子中，ws/counter/ 是 WebSocket 连接的路径
+    #如果客户端连接到 ws://yourdomain/ws/counter/，这个 URL 会被匹配。
+    #consumers.CounterConsumer.as_asgi(): 这是一个 WebSocket 消费者类，CounterConsumer 通过 as_asgi() 方法被转换为一个 ASGI 应用，以处理 WebSocket 请求。
+    #CounterConsumer 类负责处理在 ws/counter/ 路径上收到的所有 WebSocket 请求。 (會去找consumsers.py)
+    re_path(r'ws/counter/', consumers.CounterConsumer.as_asgi()),
+    re_path(r'ws/momo/', consumers_momo.Momo_Consumer.as_asgi()),
+    re_path(r'ws/pchome/', consumers_momo.Pchome_Consumer.as_asgi()),
+
+]
+
+--------------------
+4.
+
