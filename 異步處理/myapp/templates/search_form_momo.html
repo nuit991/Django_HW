@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Momo - 商品搜索</title>
+    <style>
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Momo - 商品搜索</h1>
+    <!---->
+    <!--<form> 标签：定义一个表单，用户可以通过这个表单提交搜索请求。-->
+    <!--action="{% url 'search_momo_product' %}"：指定表单提交的目标 URL。在 Django 中，这个 URL 是通过 url 模板标签动态生成的，通常会映射到一个视图函数或类视图。-->
+    <!--method="post"：表单使用 POST 方法提交数据，这种方法更安全，适用于提交敏感数据。-->
+    <form action="{% url 'search_momo_product' %}" method="post">
+        <!--{% csrf_token %}：Django 模板标签，用于生成一个 CSRF 令牌，保护表单不被跨站请求伪造（CSRF）攻击。这是 Django 安全机制的一部分。-->
+        {% csrf_token %}
+        <!--<div class="form-group">：每个输入字段都放在一个 div 中，这个 div 使用 .form-group 类来设置一些样式间距。-->
+        <div class="form-group">
+            <!--<label for="product_name">：标签元素，关联到下面的输入框，通过 for 属性指定关联的输入框的 id。-->
+            <label for="product_name">請輸入要搜索的商品名稱：</label>
+            <!--<input type="text" id="product_name" name="product_name" required>：文本输入框，用于输入商品名称，设置了 required 属性，确保用户必须输入内容才能提交表单。-->
+            <input type="text" id="product_name" name="product_name" required>
+        </div>
+
+        <div class="form-group">
+            <!--<label for="max_pages">：另一个标签元素，关联到页数输入框。-->
+            <label for="max_pages">請輸入要搜尋到第幾頁：</label>
+            <!--<input type="number" id="max_pages" name="max_pages" value="5" min="1" required>：数字输入框，用于输入要搜索的页数。设置了默认值为 5，最小值为 1，并且也是必填项。-->
+            <input type="number" id="max_pages" name="max_pages" value="5" min="1" required>
+        </div>
+
+        <button type="submit">搜索</button>
+    </form>
+</body>
+</html>
+
+
+
+
+<!--
+
+1.用户在搜索页面输入商品名称：
+用户在浏览器中打开了包含搜索表单的页面，例如 search_form_pchome.html。
+在页面中，用户输入要搜索的商品名称，并点击了提交按钮。
+
+2..表单提交：
+HTML 表单中的提交动作由 action 属性定义。在这个例子中，action="{% url 'search_pchome_product' %}" 指定了表单提交的目标 URL，即与 search_pchome_product 视图函数相关联的 URL。
+
+3.HTTP POST 请求发送：
+当用户点击搜索按钮时，浏览器会向指定的 URL 发送一个 HTTP POST 请求，请求中包含了用户输入的商品名称数据。
+
+4.后端视图函数处理：
+在 Django 中，search_pchome_product 视图函数会接收到这个 POST 请求。
+视图函数可以通过 request.POST.get('product_name') 获取到用户在输入框中输入的商品名称。
+
+5.搜索逻辑执行：
+视图函数根据获取到的商品名称执行相应的搜索逻辑，可能是调用外部 API、查询数据库或者执行其他必要的操作来获取搜索结果数据。
+
+6.返回响应：
+最终，视图函数会将搜索结果数据传递给 search_results_pchome.html 模板。
+使用 render 函数，视图函数将搜索结果数据作为上下文传递给模板，然后渲染成 HTML 页面。
+渲染完成后，将这个 HTML 页面作为 HTTP 响应发送回用户的浏览器。
+
+7.浏览器展示页面：
+浏览器接收到从后端返回的 HTML 页面响应。
+根据响应的内容，浏览器会切换显示到 search_results_pchome.html 页面，展示搜索结果给用户。
+
+-->
