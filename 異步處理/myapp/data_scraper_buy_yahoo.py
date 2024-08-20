@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 import time
+import asyncio
 
 #初始化瀏覽器
 def setup_driver():
@@ -41,7 +42,7 @@ def scroll_to_bottom(driver):
             break
 
 #顯示商品數量，然後提取名稱 / Url / 金額 / 圖片
-def extract_product_info(driver, current_page):
+async def extract_product_info(driver, current_page):
     html_content = driver.page_source
     soup = BeautifulSoup(html_content, 'html.parser')
     product_elements = soup.find_all('a', class_='sc-1drl28c-1 cnHJYW')
@@ -52,8 +53,8 @@ def extract_product_info(driver, current_page):
     else:
         print(f"Page {current_page}: {len(product_elements)} products found.")
     
-    product_info = []
-    for product in product_elements[:10]:
+
+    for product in product_elements:
         try:
             # 提取商品 name 不要先+.text.strip()，不然他抓不到就會直接掛掉
             prd_name_element = product.find('span', class_='sc-dlyefy sc-gKcDdr sc-1drl28c-5 jHwfYO ikfoIQ jZWZIY')
@@ -63,6 +64,7 @@ def extract_product_info(driver, current_page):
                 prd_name_element = product.find('span', class_='sc-gKcDdr sc-jMupca sc-1drl28c-5 kfLbyM hOVTkx jZWZIY')
                 if prd_name_element:
                     prd_name = prd_name_element.text.strip()
+            print('prd_name: ', prd_name)
 
 
 
@@ -74,29 +76,30 @@ def extract_product_info(driver, current_page):
                 price_element = product.find('span', class_='sc-gKcDdr sc-jMupca ETTiJ esZnNV')
                 if price_element:
                     price = price_element.text.strip()
+            print('price: ', price)
 
     
             # 提取商品 url
-            url = product['href']
-            #print('url', url)
-            img_urls = extract_product_images(driver, url)
-            #print('img_urls OK', img_urls)
-            product_info.append((prd_name, url, price, img_urls))
+            product_url = product['href']
+            print('product_url: ', product_url)
+
+            img_urls = extract_product_images(driver, product_url)
+            
+
         except AttributeError as e:
             print(f"Error extracting product details: {str(e)}")
-        flattened_data = []
+
+
         # 遍历原始数据
-        for item in product_info:
-            prd_name, url, price, img_urls = item
-            if isinstance(img_urls, list) and img_urls:
-            # 提取列表中的第一个图片 URL
-                img_url = img_urls[0]
-            else:
-                img_url = img_urls  # 如果已经是字符串，直接使用
-    
-            # 将扁平化后的数据项添加到新的列表中
-            flattened_data.append((prd_name, url, price, img_url))
-    return flattened_data
+        if isinstance(img_urls, list) and img_urls:
+        # 提取列表中的第一个图片 URL
+            img_url = img_urls[0]
+        else:
+            img_url = img_urls  # 如果已经是字符串，直接使用
+        print('img_urls: ', img_url)
+
+        yield prd_name, product_url, price, img_url
+
 
 #圖片要點進去抓，多寫一個def
 def extract_product_images(driver, product_url):
@@ -141,11 +144,10 @@ def click_next_page(driver, current_page):
         return False
 
 #主要程式
-def search_yahoo_product(product_name, max_page):
+async def search_yahoo_product(product_name, max_pages):
     driver = None
-    retries = 10
+    retries = 5
     attempt = 0
-    item_list = []
     len_item_list = 0
     #若有問題會重試
     while attempt < retries:
@@ -155,13 +157,15 @@ def search_yahoo_product(product_name, max_page):
             current_page = 1
             
             #User決定要抓取的最大頁數
-            while current_page <= max_page:
+            while current_page <= max_pages:
                 #往下滑
                 scroll_to_bottom(driver)
                     
                 #抓商品資料
-                product_info = extract_product_info(driver, current_page)
-                item_list.extend(product_info)
+                async for prd_name, product_url, price, img_url in extract_product_info(driver, current_page):
+                    yield prd_name, product_url, price, img_url
+                    await asyncio.sleep(1) 
+
                 if current_page == 1:
                     current_url =  search_product_on_yahoo(driver, product_name) #返回current_url(會再重複一次輸入商品名稱然後按下搜尋的動作)
                     #print(current_url)
@@ -179,27 +183,28 @@ def search_yahoo_product(product_name, max_page):
                     #print(current_url)
                     current_url = driver.current_url
                     current_page += 1
-
-            driver.quit()
-            len_item_list = len(item_list)
-            #print(len_item_list)
-            #print(item_list)
-            return item_list, len_item_list
+            break #沒加break他會一直抓
+    
 
         except Exception as e:
             print(f"Exception occurred: {str(e)}")
             attempt += 1
             print(f"Retry attempt {attempt}...")
+        
+        finally:
             driver.quit()
-    
-    print(f"Failed after {retries} retries. Exiting...")
-    return item_list, len_item_list
+            time.sleep(2)
+    print("Reached maximum retries. Returning empty list.")
+    await asyncio.sleep(1)  # 模拟数据生成的延迟
+
 
 '''
 # 測試搜索功能
 product_name = '牙刷'
 max_page = 2
 results, len_item_list = search_yahoo_product(product_name, max_page)
+
+
 
 # 輸出搜索結果
 for item in results:

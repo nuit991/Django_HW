@@ -82,18 +82,15 @@ def search_yahoo_product_view(request):
         max_pages = int(request.POST.get('max_pages', 5))
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
-        results, len_item_list = scrape_yahoo_product(product_name, max_pages)
         
         context = {
-            'results': results,
-            'len_item_list': len_item_list,
+            'product_name': product_name,
+            'max_pages': max_pages,
         }
         
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
         return render(request, 'search_results_yahoo.html', context) #{'results': context})不能這樣寫，這樣傳給前端會是字典，直接寫context就好
         #簡單來說results的結果會套用到search_results_pchome.html裡面
-    return render(request, 'search_form_yahoo.html')
-    #一開始一定會先進到這條，因為if request.method == 'POST'拿不到值，等到User輸入搜尋的商品
 
 
 

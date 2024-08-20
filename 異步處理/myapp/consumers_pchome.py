@@ -60,7 +60,7 @@ class Pchome_Consumer(AsyncWebsocketConsumer):
                 'price': price,
                 'img_url': img_url
             }
-            print('CCCC___Sending data:', data) 
+            print('Pchome___Sending data:', data) 
             #通过 WebSocket 发送数据给客户端。
             #json.dumps(data) 将数据字典转换为 JSON 格式的字符串，self.send() 是 WebSocket 消费者提供的方法，用于发送消息。
             await self.send(text_data=json.dumps(data)) 
