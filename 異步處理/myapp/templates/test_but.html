@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>測試用</title>
+</head>
+<body>
+    <h1>測試用</h1>
+    <form action="{% url 'test_res' %}" method="post">
+        {% csrf_token %}
+        <div>
+            <label for="test_res">Test專用</label> <!--這邊的product_name_pchome全部都要跟views.py裡的一樣-->  
+        </div>
+        <br>        
+        <button type="submit">搜索</button>
+    </form>
+</body>
+</html>

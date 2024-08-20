@@ -1,0 +1,25 @@
+<!-- templates/scraping_status.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scraping Status</title>
+    <script>
+        function checkStatus() {
+            fetch(`/status/${task_id}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'completed') {
+                        window.location.href = data.redirect_url;
+                    }
+                });
+        }
+        
+        setInterval(checkStatus, 5000);  // 每5秒检查一次
+    </script>
+</head>
+<body>
+    <h1>Scraping in Progress</h1>
+    <p>Please wait while we process your request.</p>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym People Count</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let updateCount = 0;
+        let countdownValue = 10; // 倒计时的初始值，单位为秒
+
+        function updateGymData() {
+            $.get('/api/gym-data/', function(data) {
+                const gymData = data.gym_data;
+                const gymList = $('#gym-list');
+                gymList.empty();  // 清空当前列表
+                gymData.forEach(function(gym) {
+                    gymList.append(`
+                        <li>
+                            <strong>${gym.name}</strong><br>
+                            Pool: ${gym.pool_people}<br>
+                            Gym: ${gym.gym_people}
+                        </li>
+                    `);
+                });
+            updateCount += 1;  // 增加更新次数
+            $('#update-count').text(updateCount);  // 更新页面上的显示次数
+            countdownValue = 10; // 重置倒计时值  
+            });
+            
+        }
+
+        function startCountdown() {
+            setInterval(function() {
+                if (countdownValue > 0) {
+                    countdownValue -= 1;
+                } else {
+                    updateGymData();
+                    countdownValue = 10; // 重置倒计时值
+                }
+                $('#countdown').text(countdownValue <= 0 ? 10 : countdownValue); // 更新倒计时显示
+            }, 1000); // 每秒更新一次倒计时
+
+            
+        }
+
+        $(document).ready(function() {
+            // 开始倒计时
+            startCountdown();
+            // 初次加载时更新数据
+            updateGymData();
+        });
+    </script>
+</head>
+<body>
+    <h1>Gym People Count</h1>
+    <p>更新次數: <span id="update-count">0</span></p>  <!-- 增加显示更新次数的元素 -->
+    <p>更新倒數計時: <span id="countdown">10</span> 秒</p> <!-- 增加显示倒计时的元素 -->
+    <ul id="gym-list">
+        {% for gym in gym_data %}
+            <li>
+                <strong>{{ gym.name }}</strong><br>
+                Pool: {{ gym.pool_people }}<br>
+                Gym: {{ gym.gym_people }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

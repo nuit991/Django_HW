@@ -1,0 +1,16 @@
+<!-- templates/search.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+    <h1>Search Page</h1>
+    <form method="post" action="{% url 'start_scraping' %}">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Enter search query" required>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

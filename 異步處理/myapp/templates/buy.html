@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy Page</title>
+    <style>
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 按鈕靠左對齊 */
+            padding-left: 10px; /* 給按鈕添加一些左側邊距 */
+        }
+
+        .button-container button {
+            margin: 10px 0; /* 在每個按鈕間添加間距 */
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Buy Page</h1>
+    <div class="button-container">
+        <button onclick="window.open('https://24h.pchome.com.tw/', '_blank')">Go to PChome</button> 
+        <!--window.open('https://24h.pchome.com.tw/', '_blank')：这是 JavaScript 代码。window.open 方法用于打开一个新的浏览器窗口或标签页，第一个参数是要打开的 URL，第二个参数 _blank 指示在新标签页或新窗口中打开链接。-->
+        <button onclick="window.open('https://www.momoshop.com.tw/', '_blank')">Go to MOMO</button>
+        <button onclick="window.open('https://tw.buy.yahoo.com/', '_blank')">Go to YAHOO</button>
+        <!-- 你可以在這裡添加更多按鈕 -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全部搜尋</title>
+    <style>
+        .page {
+            display: none;  /* 默认隐藏页面 */
+        }
+        .page.active {
+            display: block;  /* 仅显示活跃的页面 */
+        }
+        .buttons {
+            margin-top: 20px;  /* 按钮组的上边距 */
+        }
+        .buttons button {
+            margin-right: 10px;  /* 每个按钮的右边距 */
+        }
+        .results {
+            display: flex;  /* 使用 flex 布局 */
+            flex-wrap: wrap;  /* 确保当子元素超出容器宽度时，它们会自动换行。 */
+        }
+        .results li {
+            width: 20%;  /* 设置 width: 20% 确保每个 li 项的宽度占容器的 20%，从而每行可以显示 5 个项目。 */
+            box-sizing: border-box;  /* 包括内边距和边框在宽度和高度的计算中，这样可以更好地控制布局。 */
+            padding: 10px;  /* 为每个项目添加内边距，使其内容与边框之间有间距。 */
+            list-style: none;  /* 移除默认的列表项样式，使列表项不显示前面的点或数字。 */
+        }
+        /* 样式用于固定按钮 */
+        .fixed-buttons {
+            position: fixed; /* 固定在视口中 */
+            bottom: 20px; /* 距离视口底部 20px */
+            right: 20px; /* 距离视口右侧 20px */
+            display: flex; /* 使用 flexbox 进行布局 */
+            flex-direction: column; /* 垂直排列按钮 */
+            gap: 10px; /* 按钮之间的间距 */
+        }
+
+        .fixed-button {
+            padding: 10px 20px; /* 内边距 */
+            background-color: #007BFF; /* 背景颜色 */
+            color: white; /* 文字颜色 */
+            border: none; /* 去掉边框 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标悬停时显示手形光标 */
+            font-size: 16px; /* 字体大小 */
+        }
+        .loading-message {
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .results {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="buttons">
+        <button onclick="fetchResults('pchome')">PChome</button>
+        <button onclick="fetchResults('momo')">Momo</button>
+        <button onclick="fetchResults('yahoo')">YAHOO</button>
+    </div>
+    <div id="loading">爬虫中，请稍候...</div>
+    <div id="results"></div>
+
+    <div class="fixed-buttons">
+        <a href="https://24h.pchome.com.tw/" target="_blank" class="fixed-button">PChome</a>
+        <a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank" class="fixed-button">Momo</a>
+        <a href="https://tw.buy.yahoo.com/" target="_blank" class="fixed-button">YAHOO</a>
+    </div>
+    
+    <div id="page1" class="page active">
+        <h1><a href="https://24h.pchome.com.tw/" target="_blank">PChome - 商品結果</a></h1>
+        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
+        <p>找到 {{ len_item_list_pchome }} 個商品</p>
+        <ul class="results">
+            {% for item in pchome_results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div id="page2" class="page">
+        <h1><a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank">Momo - 商品結果</a></h1>
+        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
+        <p>找到 {{ len_item_list_momo }} 個商品</p>
+        <ul class="results">
+            {% for item in momo_results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div id="page3" class="page">
+        <h1><a href="https://tw.buy.yahoo.com/" target="_blank">YAHOO - 商品結果</a></h1>
+        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
+        <p>找到 {{ len_item_list_yahoo }} 個商品</p>
+        <ul class="results">
+            {% for item in yahoo_results %}
+                <li>
+                    <h3>{{ item.0 }}</h3>
+                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
+                    <p>價格：{{ item.2 }}</p>
+                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!--处理按钮-->
+    <script>
+        function showPage(pageNumber) {
+            var pages = document.querySelectorAll('.page');
+            pages.forEach(function(page) {
+                page.classList.remove('active');
+            });
+            
+            var targetPage = document.getElementById('page' + pageNumber);
+            targetPage.classList.add('active');
+        }
+
+        document.getElementById('startSearch').addEventListener('click', function() {
+            fetch('/start_scraping/')
+                .then(response => response.json())
+                .then(data => {
+                    startPolling();
+                });
+        });
+
+        function checkStatus(site) {
+            fetch(`/check_status/${site}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.done) {
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('results').innerHTML = data.data;
+                        document.getElementById('results').style.display = 'block';
+                    } else {
+                        setTimeout(() => checkStatus(site), 5000); // 每5秒检查一次
+                    }
+                });
+        }
+
+        // 启动检查状态
+        checkStatus('pchome');  // 或根据实际情况设置不同的网站
+        checkStatus('momo');  // 或根据实际情况设置不同的网站
+        checkStatus('yahoo');  // 或根据实际情况设置不同的网站
+    </script>
+</body>
+</html>

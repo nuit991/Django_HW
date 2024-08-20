@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品搜索結果</title>
+</head>
+<body>
+    <h1>商品搜索結果</h1>
+
+    <h2>PChome 商品</h2>
+    <p>找到 {{ len_item_list_pchome }} 個商品</p>
+    <ul>
+        {% for item in pchome_results %}
+            <li>
+                <h3>{{ item.0 }}</h3>
+                <p>價格：{{ item.2 }}</p>
+                <a href="{{ item.1 }}" target="_blank">查看商品</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Momo 商品</h2>
+    <p>找到 {{ len_item_list_momo }} 個商品</p>
+    <ul>
+        {% for item in momo_results %}
+            <li>
+                <h3>{{ item.0 }}</h3>
+                <p>價格：{{ item.2 }}</p>
+                <a href="{{ item.1 }}" target="_blank">查看商品</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>YAHOO - 搜索結果</h2>
+    <p>找到 {{ len_item_list_yahoo }} 個商品</p>
+    <ul>
+        {% for item in yahoo_results %}
+            <li>
+                <h3>{{ item.0 }}</h3>
+                <p>價格：{{ item.2 }}</p>
+                <a href="{{ item.1 }}" target="_blank">查看商品</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button onclick="window.history.back()">返回搜索</button>
+</body>
+</html>
