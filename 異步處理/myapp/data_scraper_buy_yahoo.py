@@ -149,6 +149,8 @@ async def search_yahoo_product(product_name, max_pages):
     retries = 5
     attempt = 0
     len_item_list = 0
+    print('product_name', product_name)
+    print('max_pages', max_pages)
     #若有問題會重試
     while attempt < retries:
         try:

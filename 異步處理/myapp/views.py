@@ -36,16 +36,19 @@ def search_form_pchome(request):
 def search_pchome_product_view(request):
     #request : HTTP 请求的所有信息，在目前情況下進到http://127.0.0.1:8000/search-form-pchome/這個網頁，輸入要搜尋的名稱，這樣就算是一種request (?
     if request.method == 'POST':
+        print(request.POST)
         #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
-        product_name = request.POST.get('product_name')
-        scroll_count = int(request.POST.get('scroll_count', 5))
+        product_name_pchome = request.POST.get('product_name_pchome')
+        print(product_name_pchome)
+        scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
+        print(scroll_count_pchome)
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
-        
+
 
         context = {
-            'product_name': product_name,
-            'scroll_count': scroll_count,
+            'product_name_pchome': product_name_pchome,
+            'scroll_count_pchome': scroll_count_pchome,
         }
 
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
@@ -57,15 +60,17 @@ def search_form_momo(request):
 
 
 def search_momo_product_view(request):
-    
+    print(request.POST)
     if request.method == 'POST':
-        product_name = request.POST.get('product_name')
-        max_pages = int(request.POST.get('max_pages', 5))
+        product_name_momo = request.POST.get('product_name_momo')
+        print(product_name_momo)
+        momo_max_pages = int(request.POST.get('momo_max_pages', 5))
+        print(momo_max_pages)
 
         # 将数据传递给结果模板
         context = {
-            'product_name': product_name,
-            'max_pages': max_pages
+            'product_name_momo': product_name_momo,
+            'momo_max_pages': momo_max_pages
         }
     return render(request, 'search_results_momo.html', context)
     
@@ -77,15 +82,18 @@ def search_form_yahoo(request):
 def search_yahoo_product_view(request):
     #request : HTTP 请求的所有信息，在目前情況下進到http://127.0.0.1:8000/search-form-pchome/這個網頁，輸入要搜尋的名稱，這樣就算是一種request (?
     if request.method == 'POST':
+        print(request.POST)
         #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
-        product_name = request.POST.get('product_name')
-        max_pages = int(request.POST.get('max_pages', 5))
+        product_name_yahoo = request.POST.get('product_name_yahoo')
+        print(product_name_yahoo)
+        yahoo_max_pages = int(request.POST.get('yahoo_max_pages', 5))
+        print(yahoo_max_pages)
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
         
         context = {
-            'product_name': product_name,
-            'max_pages': max_pages,
+            'product_name_yahoo': product_name_yahoo,
+            'yahoo_max_pages': yahoo_max_pages
         }
         
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
@@ -142,21 +150,19 @@ def pagination_result(request):
             product_name_yahoo = request.POST.get('product_name_yahoo')
             max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
 
-            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, scroll_count_pchome)
-            momo_results, len_item_list_momo = scrape_momo_product(product_name_momo, max_pages_momo)
-            yahoo_results, len_item_list_yahoo = scrape_yahoo_product(product_name_yahoo, max_pages_yahoo)
-
             context = {
-                'pchome_results': pchome_results,
-                'len_item_list_pchome': len_item_list_pchome,
-                'momo_results': momo_results,
-                'len_item_list_momo': len_item_list_momo,
-                'yahoo_results': yahoo_results,
-                'len_item_list_yahoo': len_item_list_yahoo,
+                'product_name_pchom': product_name_pchome,
+                'scroll_count_pchome': scroll_count_pchome,
+
+                'product_name_momo': product_name_momo,
+                'max_pages_momo': max_pages_momo,
+
+                'product_name_yahoo': product_name_yahoo,
+                'max_pages_yahoo': max_pages_yahoo,
             }
 
             return render(request, 'pagination_result.html', context)
-    return render(request, 'pagination_search.html')
+
 
 def test_but(request):
     return render(request, 'test_but.html')

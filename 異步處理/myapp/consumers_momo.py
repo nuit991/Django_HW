@@ -40,9 +40,9 @@ class Momo_Consumer(AsyncWebsocketConsumer):
         #将接收到的 JSON 字符串转换为 Python 字典。json.loads 函数用于解析 JSON 字符串并返回相应的字典对象。
         data = json.loads(text_data)
         #从解析后的字典中获取 product_name 的值。data.get 方法用于获取字典中的值，如果键不存在，则返回 None。
-        product_name = data.get('product_name')
+        product_name = data.get('product_name_momo')
         #从字典中获取 max_pages 的值，并将其转换为整数。data.get('max_pages', 5) 意味着，如果 max_pages 键不存在，则默认值为 5。int 函数将其转换为整数类型。
-        max_pages = int(data.get('max_pages', 5))
+        max_pages = int(data.get('momo_max_pages', 5))
         #使用 asyncio.create_task 创建一个新的异步任务，调用 self.send_product_data 方法。
         #asyncio.create_task 用于调度异步任务，self.product_task 保存了这个任务对象，以便后续可以取消或检查任务的状态。
         self.product_task = asyncio.create_task(self.send_product_data(product_name, max_pages))
