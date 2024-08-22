@@ -59,8 +59,11 @@
 
     <script>
         //前端輸入的商品名稱跟頁數會丟過來
-        const productName = "{{ product_name }}";
-        const maxPages = "{{ max_pages }}";
+        const productNameMomo = "{{ product_name_momo }}";
+        const maxPagesMomo = "{{ momo_max_pages }}";
+        
+        console.log('productNameMomo:', productNameMomo);
+        console.log('maxPagesMomo:', maxPagesMomo);
 
 
         // 创建 WebSocket 连接  
@@ -78,9 +81,9 @@
                 //表示发送的命令是 "start"，告诉服务器要开始执行某个操作（如开始搜索）。
                 'command': 'start',
                 //product_name: productName：将 productName 的值（通常是用户在前端输入的商品名称）发送给服务器，告诉服务器要搜索哪个商品。
-                'product_name': productName, 
+                'product_name_momo': productNameMomo, 
                 //max_pages: maxPages：将 maxPages 的值（用户指定的最大搜索页数）发送给服务器，告诉服务器搜索的最大页数限制。
-                'max_pages': maxPages 
+                'momo_max_pages': maxPagesMomo
             }));
         };
 

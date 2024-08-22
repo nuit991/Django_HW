@@ -15,13 +15,13 @@
         {% csrf_token %}
         
         <div class="form-group">
-            <label for="product_name">請輸入要搜索的商品名稱：</label>
-            <input type="text" id="product_name" name="product_name" required>
+            <label for="product_name_yahoo">請輸入要搜索的商品名稱：</label>
+            <input type="text" id="product_name_yahoo" name="product_name_yahoo" required>
         </div>
 
         <div class="form-group">
-            <label for="max_pages">請輸入要搜尋到第幾頁：</label>
-            <input type="number" id="max_pages" name="max_pages" value="5" min="1" required>
+            <label for="yahoo_max_pages">請輸入要搜尋到第幾頁：</label>
+            <input type="number" id="yahoo_max_pages" name="yahoo_max_pages" value="5" min="1" required>
         </div>
 
         <button type="submit">搜索</button>

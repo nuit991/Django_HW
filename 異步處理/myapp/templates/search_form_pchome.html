@@ -15,13 +15,14 @@
         {% csrf_token %}
         
         <div class="form-group">
-            <label for="product_name">請輸入要搜索的商品名稱：</label>
-            <input type="text" id="product_name" name="product_name" required>
+            <label for="product_name_pchome">請輸入要搜索的商品名稱：</label>
+            <!--name 属性是在 views.py 中通过 request.POST.get() 获取表单数据时使用的键名。-->
+            <input type="text" id="product_name_pchome" name="product_name_pchome" required>
         </div>
 
         <div class="form-group">
-            <label for="scroll_count">請輸入滾動次數：</label>
-            <input type="number" id="scroll_count" name="scroll_count" value="5" min="1" required>
+            <label for="scroll_count_pchome">請輸入滾動次數：</label>
+            <input type="number" id="scroll_count_pchome" name="scroll_count_pchome" value="5" min="1" required>
         </div>
 
         <button type="submit">搜索</button>

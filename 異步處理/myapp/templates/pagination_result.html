@@ -2,161 +2,191 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全部搜尋</title>
+    <title>搜索结果</title>
     <style>
-        .page {
-            display: none;  /* 默认隐藏页面 */
+        /* 页面样式定义 */
+        .product-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px; /* 设置列与列之间的间距 */
         }
-        .page.active {
-            display: block;  /* 仅显示活跃的页面 */
+        .product-item {
+            width: 19%; /* 每行显示5个产品 */
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd; /* 添加边框以区分产品 */
+            border-radius: 5px; /* 轻微的圆角效果 */
+            background-color: #f9f9f9; /* 背景颜色 */
+            text-align: center; /* 文本居中 */
+        }
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px; /* 图片圆角 */
+        }
+        .product-item h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .product-item p {
+            color: #333;
+            font-size: 1em;
+            margin: 5px 0;
+        }
+        .product-item a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .product-item a:hover {
+            background-color: #0056b3;
+        }
+        #total-items {
+            margin-top: 20px;
+            font-size: 1.5em;
         }
         .buttons {
-            margin-top: 20px;  /* 按钮组的上边距 */
+            margin-bottom: 20px;
         }
         .buttons button {
-            margin-right: 10px;  /* 每个按钮的右边距 */
+            padding: 10px;
+            margin-right: 10px;
+            cursor: pointer;
         }
-        .results {
-            display: flex;  /* 使用 flex 布局 */
-            flex-wrap: wrap;  /* 确保当子元素超出容器宽度时，它们会自动换行。 */
+        .page {
+            display: none; /* 默认隐藏所有页面 */
         }
-        .results li {
-            width: 20%;  /* 设置 width: 20% 确保每个 li 项的宽度占容器的 20%，从而每行可以显示 5 个项目。 */
-            box-sizing: border-box;  /* 包括内边距和边框在宽度和高度的计算中，这样可以更好地控制布局。 */
-            padding: 10px;  /* 为每个项目添加内边距，使其内容与边框之间有间距。 */
-            list-style: none;  /* 移除默认的列表项样式，使列表项不显示前面的点或数字。 */
-        }
-        /* 样式用于固定按钮 */
-        .fixed-buttons {
-            position: fixed; /* 固定在视口中 */
-            bottom: 20px; /* 距离视口底部 20px */
-            right: 20px; /* 距离视口右侧 20px */
-            display: flex; /* 使用 flexbox 进行布局 */
-            flex-direction: column; /* 垂直排列按钮 */
-            gap: 10px; /* 按钮之间的间距 */
-        }
-
-        .fixed-button {
-            padding: 10px 20px; /* 内边距 */
-            background-color: #007BFF; /* 背景颜色 */
-            color: white; /* 文字颜色 */
-            border: none; /* 去掉边框 */
-            border-radius: 5px; /* 圆角 */
-            cursor: pointer; /* 鼠标悬停时显示手形光标 */
-            font-size: 16px; /* 字体大小 */
-        }
-        .loading-message {
-            font-size: 24px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .results {
-            display: none;
+        .page.active {
+            display: block; /* 仅显示具有 'active' 类的页面 */
         }
     </style>
 </head>
 <body>
+    <h1>搜索结果</h1>
+    
     <div class="buttons">
-        <button onclick="fetchResults('pchome')">PChome</button>
-        <button onclick="fetchResults('momo')">Momo</button>
-        <button onclick="fetchResults('yahoo')">YAHOO</button>
+        <button onclick="showPage('pchome')">PChome</button>
+        <button onclick="showPage('momo')">Momo</button>
+        <button onclick="showPage('yahoo')">YAHOO</button>
     </div>
-    <div id="loading">爬虫中，请稍候...</div>
-    <div id="results"></div>
+    
+    <div id="page-pchome" class="page">
+        <div id="product-container-pchome" class="product-row"></div>
+        <div id="total-items-pchome">共 0 件商品</div>
+    </div>
+    
+    <div id="page-momo" class="page">
+        <div id="product-container-momo" class="product-row"></div>
+        <div id="total-items-momo">共 0 件商品</div>
+    </div>
+    
+    <div id="page-yahoo" class="page">
+        <div id="product-container-yahoo" class="product-row"></div>
+        <div id="total-items-yahoo">共 0 件商品</div>
+    </div>
 
-    <div class="fixed-buttons">
-        <a href="https://24h.pchome.com.tw/" target="_blank" class="fixed-button">PChome</a>
-        <a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank" class="fixed-button">Momo</a>
-        <a href="https://tw.buy.yahoo.com/" target="_blank" class="fixed-button">YAHOO</a>
-    </div>
-    
-    <div id="page1" class="page active">
-        <h1><a href="https://24h.pchome.com.tw/" target="_blank">PChome - 商品結果</a></h1>
-        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
-        <p>找到 {{ len_item_list_pchome }} 個商品</p>
-        <ul class="results">
-            {% for item in pchome_results %}
-                <li>
-                    <h3>{{ item.0 }}</h3>
-                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
-                    <p>價格：{{ item.2 }}</p>
-                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-    <div id="page2" class="page">
-        <h1><a href="https://www.momoshop.com.tw/main/Main.jsp" target="_blank">Momo - 商品結果</a></h1>
-        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
-        <p>找到 {{ len_item_list_momo }} 個商品</p>
-        <ul class="results">
-            {% for item in momo_results %}
-                <li>
-                    <h3>{{ item.0 }}</h3>
-                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
-                    <p>價格：{{ item.2 }}</p>
-                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-    <div id="page3" class="page">
-        <h1><a href="https://tw.buy.yahoo.com/" target="_blank">YAHOO - 商品結果</a></h1>
-        <div id="loading" class="loading-message">爬虫正在进行，请稍候...</div>
-        <p>找到 {{ len_item_list_yahoo }} 個商品</p>
-        <ul class="results">
-            {% for item in yahoo_results %}
-                <li>
-                    <h3>{{ item.0 }}</h3>
-                    <img src="{{ item.3 }}" alt="Product Image" width="200" height="200">
-                    <p>價格：{{ item.2 }}</p>
-                    <a href="{{ item.1 }}" target="_blank">查看商品</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-    <!--处理按钮-->
     <script>
-        function showPage(pageNumber) {
-            var pages = document.querySelectorAll('.page');
+        const productNamePchome = "{{ product_name_pchome }}";
+        const productNameMomo = "{{ product_name_momo }}";
+        const productNameYahoo = "{{ product_name_yahoo }}";
+
+        const maxPagesPchome = "{{ scroll_count_pchome }}";
+        const maxPagesMomo = "{{ momo_max_pages }}";
+        const maxPagesYahoo = "{{ yahoo_max_pages }}";
+
+        // 创建 WebSocket 连接
+        const sockets = {
+            pchome: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/pchome/'),
+            momo: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/'),
+            yahoo: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/yahoo/')
+        };
+
+        function setupWebSocket(socket, source) {
+            socket.onopen = function(event) {
+                console.log(`${source} WebSocket connection opened:`, event);
+
+                //productName 的变量，并将其初始化为空字符串 ''。
+                let productName = '';
+                //maxPages 的变量，并将其初始化为空字符串 ''。
+                let maxPages = '';
+
+                // 根据 source 设置不同的商品名称和最大页数
+                if (source === 'pchome') {
+                    productName = productNamePchome;
+                    maxPages = maxPagesPchome;
+
+                } else if (source === 'momo') {
+                    productName = productNameMomo;
+                    maxPages = maxPagesMomo;
+
+                } else if (source === 'yahoo') {
+                    productName = productNameYahoo;
+                    maxPages = maxPagesYahoo;
+                }
+
+                socket.send(JSON.stringify({
+                    'command': 'start',
+                    'product_name': productName,
+                    'max_pages': maxPages
+                }));
+            };
+
+            socket.onmessage = function(event) {
+                console.log(`${source} WebSocket message received:`, event.data);
+                const data = JSON.parse(event.data);
+
+                if (data.status === 'completed') {
+                    console.log(`${source} 数据抓取已完成`);
+                    alert(`${source} 数据抓取已完成，处理完毕。`);
+                    socket.close();
+                } else {
+                    const productContainer = document.getElementById(`product-container-${source}`);
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    productItem.innerHTML = `
+                        <h3>${data.prd_name}</h3>
+                        <p>价格：${data.price}</p>
+                        <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
+                        <a href="${data.product_url}" target="_blank">查看商品</a>
+                    `;
+                    productContainer.appendChild(productItem);
+
+                    const totalItemsElement = document.getElementById(`total-items-${source}`);
+                    const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
+                    totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
+                }
+            };
+
+            socket.onerror = function(error) {
+                console.error(`${source} WebSocket Error:`, error);
+            };
+
+            socket.onclose = function(event) {
+                console.log(`${source} WebSocket closed:`, event);
+                alert(`${source} WebSocket连接已关闭。`);
+            };
+        }
+
+        function showPage(source) {
+            var pages = document.querySelectorAll('.page'); // 获取所有具有 'page' 类的元素
             pages.forEach(function(page) {
-                page.classList.remove('active');
+                page.classList.remove('active'); // 移除所有页面的 'active' 类
             });
             
-            var targetPage = document.getElementById('page' + pageNumber);
-            targetPage.classList.add('active');
+            var targetPage = document.getElementById('page-' + source); // 获取特定页面部分的元素
+            if (targetPage) {
+                targetPage.classList.add('active'); // 为目标页面部分添加 'active' 类
+            }
         }
 
-        document.getElementById('startSearch').addEventListener('click', function() {
-            fetch('/start_scraping/')
-                .then(response => response.json())
-                .then(data => {
-                    startPolling();
-                });
-        });
-
-        function checkStatus(site) {
-            fetch(`/check_status/${site}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.done) {
-                        document.getElementById('loading').style.display = 'none';
-                        document.getElementById('results').innerHTML = data.data;
-                        document.getElementById('results').style.display = 'block';
-                    } else {
-                        setTimeout(() => checkStatus(site), 5000); // 每5秒检查一次
-                    }
-                });
-        }
-
-        // 启动检查状态
-        checkStatus('pchome');  // 或根据实际情况设置不同的网站
-        checkStatus('momo');  // 或根据实际情况设置不同的网站
-        checkStatus('yahoo');  // 或根据实际情况设置不同的网站
+        // 默认显示第一个页面（PChome）
+        showPage('pchome');
     </script>
 </body>
 </html>
+s
