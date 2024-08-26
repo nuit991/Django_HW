@@ -50,113 +50,108 @@
             margin-top: 20px;
             font-size: 1.5em;
         }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-container #show-results {
+            background-color: #28a745;
+            color: white;
+        }
+        .button-container #clear-results {
+            background-color: #dc3545;
+            color: white;
+        }
+        .button-container button:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
     <h1>MOMO - 搜索結果</h1>
-    <div id="product-container" class="product-row"></div>
-    <div id="total-items">共 0 件商品</div>
+    <div class="button-container">
+        <button id="show-results">顯示商品结果</button>
+        <button id="clear-results">清除结果</button>
+    </div>
+    <div id="product-container" class="product-row" style="display: none;"></div>
+    <div id="total-items" style="display: none;">共 0 件商品</div>
 
     <script>
-        //前端輸入的商品名稱跟頁數會丟過來
         const productNameMomo = "{{ product_name_momo }}";
         const maxPagesMomo = "{{ momo_max_pages }}";
         
-        console.log('productNameMomo:', productNameMomo);
-        console.log('maxPagesMomo:', maxPagesMomo);
-
-
-        // 创建 WebSocket 连接  
-        //建立了前端与后端之间的 WebSocket 连接，允许双向数据通信。此时连接已建立，但数据尚未传输。
         const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/');
 
-        //当 WebSocket 连接成功打开时，onopen 事件触发，前端通过 socket.send() 方法向后端发送一个初始消息，告知后端开始搜索指定的商品。
-        socket.onopen = function(event) {  
-            //这行代码在控制台输出一个消息，显示 WebSocket 连接已成功打开，并附带 event 对象的信息。这有助于在调试时了解连接的状态和相关信息。  
+        // 数据抓取
+        socket.onopen = function(event) {
             console.log('WebSocket connection opened:', event);
 
-            // socket.send() 是 WebSocket 提供的一个方法，用于向服务器发送数据。
-            //JSON.stringify({...}) 将一个 JavaScript 对象转换为 JSON 格式的字符串，以便通过 WebSocket 传输。
             socket.send(JSON.stringify({
-                //表示发送的命令是 "start"，告诉服务器要开始执行某个操作（如开始搜索）。
                 'command': 'start',
-                //product_name: productName：将 productName 的值（通常是用户在前端输入的商品名称）发送给服务器，告诉服务器要搜索哪个商品。
-                'product_name_momo': productNameMomo, 
-                //max_pages: maxPages：将 maxPages 的值（用户指定的最大搜索页数）发送给服务器，告诉服务器搜索的最大页数限制。
+                'product_name_momo': productNameMomo,
                 'momo_max_pages': maxPagesMomo
             }));
         };
 
-        // 监听 WebSocket 消息    
-        // 跟const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/');拿資料
-        // 服务器端在处理完请求后，会通过这个 WebSocket 连接发送数据到前端。每当服务器发送数据时，socket.onmessage 事件被触发，event.data 包含了服务器发送的内容。
-        // 只要 WebSocket 连接没有关闭，并且服务器持续发送数据，前端的 onmessage 事件处理函数就会继续被调用。
-        socket.onmessage = function(event) { //通过访问 event.data，你可以获取并处理服务器发送的消息，通常会根据应用需求解析并处理这些数据。
-            //这行代码在控制台输出一条消息，内容是收到的 WebSocket 消息。这是用于调试的，便于开发者了解收到的数据内容。
-            console.log('WebSocket message received:', event.data);
-            //功能：event.data 是服务器发送的消息数据，通常是字符串形式。使用 JSON.parse() 将这个字符串转换为 JavaScript 对象，便于后续处理。
+        let resultsFetched = false;
+
+        socket.onmessage = function(event) {
             const data = JSON.parse(event.data);
 
             if (data.status === 'completed') {
                 console.log('数据抓取已完成');
-                alert('数据抓取已完成，处理完毕。');
-                // 比如禁用搜索按钮
+                resultsFetched = true;
                 socket.close();
-                
             } else {
-                // 正常处理收到的数据
-                console.log('接收到的数据:', data);
-        
-                // 查找页面上 ID 为 product-container 的 HTML 元素
+                // 处理接收到的数据并添加到产品容器中
                 const productContainer = document.getElementById('product-container');
-
-                // 创建新产品项并添加到容器中
                 const productItem = document.createElement('div');
                 productItem.className = 'product-item';
 
                 productItem.innerHTML = `
                     <h3>${data.prd_name}</h3>
-                    <p>價格：${data.price}</p>
+                    <p>价格：${data.price}</p>
                     <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
                     <a href="${data.product_url}" target="_blank">查看商品</a>
                 `;
 
-                // 将新产品项添加到容器中
                 productContainer.appendChild(productItem);
 
-                // 更新总商品数量
                 const totalItemsElement = document.getElementById('total-items');
                 const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
                 totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
             }
         };
-        
-        // socket.onerror：这是一个事件处理程序，当 WebSocket 连接中发生错误时会触发。
-        //function(error)：这个函数接收一个 error 对象，包含了有关错误的信息。
+
         socket.onerror = function(error) {
-            //console.error('WebSocket Error:', error);：使用 console.error 打印错误信息到浏览器的控制台，以便开发者能够查看和调试这个错误。
             console.error('WebSocket Error:', error);
         };
 
-        // socket.onclose：这是另一个事件处理程序，当 WebSocket 连接关闭时会触发。
-        //function(event)：这个函数接收一个 event 对象，包含了关于关闭事件的详细信息。
         socket.onclose = function(event) {
-            //console.log('WebSocket closed:', event);：使用 console.log 在控制台记录 WebSocket 关闭的事件信息，这样开发者就知道连接已经关闭了。
             console.log('WebSocket closed:', event);
-            // alert("WebSocket连接已关闭。");：显示一个警告框，通知用户 WebSocket 连接已经关闭。这个提示对用户来说是一个明显的反馈，表明他们的连接已断开。
-            alert("WebSocket连接已关闭。");
+            if (resultsFetched) {
+                alert("WebSocket连接已关闭。");
+            }
         };
+
+        document.getElementById('show-results').addEventListener('click', function() {
+            document.getElementById('product-container').style.display = 'flex';
+            document.getElementById('total-items').style.display = 'block';
+        });
+
+        document.getElementById('clear-results').addEventListener('click', function() {
+            document.getElementById('product-container').innerHTML = '';
+            document.getElementById('total-items').textContent = '共 0 件商品';
+            document.getElementById('product-container').style.display = 'none';
+            document.getElementById('total-items').style.display = 'none';
+        });
     </script>
 </body>
 </html>
-
-
-
-<!--
-
-socket.onopen 处理连接建立后的操作。
-socket.onmessage 处理接收到的消息。
-socket.onerror 处理连接中的错误。
-socket.onclose 处理连接关闭后的操作。
-
--->

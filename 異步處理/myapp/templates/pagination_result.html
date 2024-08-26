@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>搜索结果</title>
+    <title>分頁顯示</title>
     <style>
         /* 页面样式定义 */
         .product-row {
@@ -50,143 +50,262 @@
             margin-top: 20px;
             font-size: 1.5em;
         }
-        .buttons {
-            margin-bottom: 20px;
+        .button-container {
+            display: flex; /* 使用flexbox布局 */
+            justify-content: space-between; /* 控制子元素在主轴方向的间距 */
+            gap: 10px; /* 控制每组按钮之间的间距 */
         }
-        .buttons button {
-            padding: 10px;
-            margin-right: 10px;
-            cursor: pointer;
+
+        .button-group {
+        display: flex;
+        flex-direction: column; /* 每组按钮在纵轴方向排列 */
+        gap: 5px; /* 控制每个按钮之间的间距 */
         }
-        .page {
-            display: none; /* 默认隐藏所有页面 */
-        }
-        .page.active {
-            display: block; /* 仅显示具有 'active' 类的页面 */
+
+        button {
+            padding: 10px 20px;
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <h1>搜索结果</h1>
-    
-    <div class="buttons">
-        <button onclick="showPage('pchome')">PChome</button>
-        <button onclick="showPage('momo')">Momo</button>
-        <button onclick="showPage('yahoo')">YAHOO</button>
+    <h1>分頁顯示</h1>
+    <div class="button-container">
+        <div class="button-group">
+            <button id="show-momo-results">Momo商品结果</button>
+            <button id="clear-momo-results">清除Momo结果</button>
+        </div>
+        <div class="button-group">
+            <button id="show-pchome-results">PChome商品结果</button>
+            <button id="clear-pchome-results">清除PChome结果</button>
+        </div>
+        <div class="button-group">
+            <button id="show-yahoo-results">Yahoo商品结果</button>
+            <button id="clear-yahoo-results">清除Yahoo结果</button>
+        </div>
     </div>
-    
-    <div id="page-pchome" class="page">
-        <div id="product-container-pchome" class="product-row"></div>
-        <div id="total-items-pchome">共 0 件商品</div>
-    </div>
-    
-    <div id="page-momo" class="page">
-        <div id="product-container-momo" class="product-row"></div>
-        <div id="total-items-momo">共 0 件商品</div>
-    </div>
-    
-    <div id="page-yahoo" class="page">
-        <div id="product-container-yahoo" class="product-row"></div>
-        <div id="total-items-yahoo">共 0 件商品</div>
-    </div>
+
+    <div id="momo-product-container" class="product-row" style="display: none;"></div>
+    <div id="momo-total-items" style="display: none;">共 0 件商品</div>
+
+    <div id="pchome-product-container" class="product-row" style="display: none;"></div>
+    <div id="pchome-total-items" style="display: none;">共 0 件商品</div>
+
+    <div id="yahoo-product-container" class="product-row" style="display: none;"></div>
+    <div id="yahoo-total-items" style="display: none;">共 0 件商品</div>
 
     <script>
-        const productNamePchome = "{{ product_name_pchome }}";
         const productNameMomo = "{{ product_name_momo }}";
-        const productNameYahoo = "{{ product_name_yahoo }}";
-
-        const maxPagesPchome = "{{ scroll_count_pchome }}";
         const maxPagesMomo = "{{ momo_max_pages }}";
-        const maxPagesYahoo = "{{ yahoo_max_pages }}";
 
-        // 创建 WebSocket 连接
-        const sockets = {
-            pchome: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/pchome/'),
-            momo: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/'),
-            yahoo: new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/yahoo/')
+        const productNamePchome = "{{ product_name_pchome }}";
+        const maxPagesPchome = "{{ pchome_max_pages }}";
+
+        const productNameYahoo = "{{ product_name_yahoo }}";
+        const maxPagesYahoo = "{{ yahoo_max_pages }}";
+        
+        const socketMomo = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/momo/');
+        const socketPchome = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/pchome/');
+        const socketYahoo = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/yahoo/');
+
+        let resultsFetched_MOMO = false;
+        let resultsFetched_Pchome = false;
+        let resultsFetched_Yahoo = false;
+
+
+        // 数据抓取
+        socketMomo.onopen = function(event) {
+            console.log('WebSocket connection opened:', event);
+
+            socketMomo.send(JSON.stringify({
+                'command': 'start',
+                'product_name_momo': productNameMomo,
+                'momo_max_pages': maxPagesMomo
+            }));
         };
 
-        function setupWebSocket(socket, source) {
-            socket.onopen = function(event) {
-                console.log(`${source} WebSocket connection opened:`, event);
+        socketMomo.onmessage = function(event) {
+            const data = JSON.parse(event.data);
 
-                //productName 的变量，并将其初始化为空字符串 ''。
-                let productName = '';
-                //maxPages 的变量，并将其初始化为空字符串 ''。
-                let maxPages = '';
+            if (data.status === 'completed') {
+                console.log('数据抓取已完成');
+                resultsFetched_MOMO = true;
+                socketMomo.close();
+            } else {
+                // 处理接收到的数据并添加到产品容器中
+                const productContainer = document.getElementById('momo-product-container');
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
 
-                // 根据 source 设置不同的商品名称和最大页数
-                if (source === 'pchome') {
-                    productName = productNamePchome;
-                    maxPages = maxPagesPchome;
+                productItem.innerHTML = `
+                    <h3>${data.prd_name}</h3>
+                    <p>价格：${data.price}</p>
+                    <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
+                    <a href="${data.product_url}" target="_blank">查看商品</a>
+                `;
 
-                } else if (source === 'momo') {
-                    productName = productNameMomo;
-                    maxPages = maxPagesMomo;
+                productContainer.appendChild(productItem);
 
-                } else if (source === 'yahoo') {
-                    productName = productNameYahoo;
-                    maxPages = maxPagesYahoo;
-                }
-
-                socket.send(JSON.stringify({
-                    'command': 'start',
-                    'product_name': productName,
-                    'max_pages': maxPages
-                }));
-            };
-
-            socket.onmessage = function(event) {
-                console.log(`${source} WebSocket message received:`, event.data);
-                const data = JSON.parse(event.data);
-
-                if (data.status === 'completed') {
-                    console.log(`${source} 数据抓取已完成`);
-                    alert(`${source} 数据抓取已完成，处理完毕。`);
-                    socket.close();
-                } else {
-                    const productContainer = document.getElementById(`product-container-${source}`);
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    productItem.innerHTML = `
-                        <h3>${data.prd_name}</h3>
-                        <p>价格：${data.price}</p>
-                        <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
-                        <a href="${data.product_url}" target="_blank">查看商品</a>
-                    `;
-                    productContainer.appendChild(productItem);
-
-                    const totalItemsElement = document.getElementById(`total-items-${source}`);
-                    const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
-                    totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
-                }
-            };
-
-            socket.onerror = function(error) {
-                console.error(`${source} WebSocket Error:`, error);
-            };
-
-            socket.onclose = function(event) {
-                console.log(`${source} WebSocket closed:`, event);
-                alert(`${source} WebSocket连接已关闭。`);
-            };
-        }
-
-        function showPage(source) {
-            var pages = document.querySelectorAll('.page'); // 获取所有具有 'page' 类的元素
-            pages.forEach(function(page) {
-                page.classList.remove('active'); // 移除所有页面的 'active' 类
-            });
-            
-            var targetPage = document.getElementById('page-' + source); // 获取特定页面部分的元素
-            if (targetPage) {
-                targetPage.classList.add('active'); // 为目标页面部分添加 'active' 类
+                const totalItemsElement = document.getElementById('momo-total-items');
+                const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
+                totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
             }
-        }
+        };
 
-        // 默认显示第一个页面（PChome）
-        showPage('pchome');
+        socketMomo.onerror = function(error) {
+            console.error('WebSocket Error:', error);
+        };
+
+        socketMomo.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+            if (resultsFetched_MOMO) {
+                alert("WebSocket连接已关闭。");
+            }
+        };
+
+        
+        socketPchome.onopen = function(event) {
+            console.log('WebSocket connection opened:', event);
+
+            socketPchome.send(JSON.stringify({
+                'command': 'start',
+                'product_name_pchome': productNamePchome,
+                'pchome_max_pages': maxPagesPchome
+            }));
+        };
+
+        socketPchome.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+
+            if (data.status === 'completed') {
+                console.log('数据抓取已完成');
+                resultsFetched_Pchome = true;
+                ssocketPchome.close();
+            } else {
+                // 处理接收到的数据并添加到产品容器中
+                const productContainer = document.getElementById('pchome-product-container');
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+
+                productItem.innerHTML = `
+                    <h3>${data.prd_name}</h3>
+                    <p>价格：${data.price}</p>
+                    <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
+                    <a href="${data.product_url}" target="_blank">查看商品</a>
+                `;
+
+                productContainer.appendChild(productItem);
+
+                const totalItemsElement = document.getElementById('pchome-total-items');
+                const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
+                totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
+            }
+        };
+
+        socketPchome.onerror = function(error) {
+            console.error('WebSocket Error:', error);
+        };
+
+        socketPchome.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+            if (resultsFetched_Pchome) {
+                alert("WebSocket连接已关闭。");
+            }
+        };
+        
+        
+        
+        socketYahoo.onopen = function(event) {
+            console.log('WebSocket connection opened:', event);
+
+            socketYahoo.send(JSON.stringify({
+                'command': 'start',
+                'product_name_yahoo': productNameYahoo,
+                'yahoo_max_pages': maxPagesYahoo
+            }));
+        };
+
+        socketYahoo.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+
+            if (data.status === 'completed') {
+                console.log('数据抓取已完成');
+                resultsFetched_Yahoo = true;
+                socketYahoo.close();
+            } else {
+                // 处理接收到的数据并添加到产品容器中
+                const productContainer = document.getElementById('yahoo-product-container');
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+
+                productItem.innerHTML = `
+                    <h3>${data.prd_name}</h3>
+                    <p>价格：${data.price}</p>
+                    <img src="${data.img_url}" alt="Product Image" width="200" height="200" onerror="this.onerror=null;this.src='default.jpg';">
+                    <a href="${data.product_url}" target="_blank">查看商品</a>
+                `;
+
+                productContainer.appendChild(productItem);
+
+                const totalItemsElement = document.getElementById('yahoo-total-items');
+                const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;
+                totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
+            }
+        };
+
+        socketYahoo.onerror = function(error) {
+            console.error('WebSocket Error:', error);
+        };
+
+        socketYahoo.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+            if (resultsFetched_Yahoo) {
+                alert("WebSocket连接已关闭。");
+            }
+        };
+        
+        
+        
+        
+        // Momo 结果显示和清除
+        document.getElementById('show-momo-results').addEventListener('click', function() {
+        document.getElementById('momo-product-container').style.display = 'flex';
+        document.getElementById('momo-total-items').style.display = 'block';
+        });
+
+        document.getElementById('clear-momo-results').addEventListener('click', function() {
+        document.getElementById('momo-product-container').innerHTML = '';
+        document.getElementById('momo-total-items').textContent = '共 0 件商品';
+        document.getElementById('momo-product-container').style.display = 'none';
+        document.getElementById('momo-total-items').style.display = 'none';
+        });
+
+        // PChome 结果显示和清除
+        document.getElementById('show-pchome-results').addEventListener('click', function() {
+        document.getElementById('pchome-product-container').style.display = 'flex';
+        document.getElementById('pchome-total-items').style.display = 'block';
+        });
+
+        document.getElementById('clear-pchome-results').addEventListener('click', function() {
+        document.getElementById('pchome-product-container').innerHTML = '';
+        document.getElementById('pchome-total-items').textContent = '共 0 件商品';
+        document.getElementById('pchome-product-container').style.display = 'none';
+        document.getElementById('pchome-total-items').style.display = 'none';
+        });
+
+        // Yahoo 结果显示和清除
+        document.getElementById('show-yahoo-results').addEventListener('click', function() {
+        document.getElementById('yahoo-product-container').style.display = 'flex';
+        document.getElementById('yahoo-total-items').style.display = 'block';
+        });
+
+        document.getElementById('clear-yahoo-results').addEventListener('click', function() {
+        document.getElementById('yahoo-product-container').innerHTML = '';
+        document.getElementById('yahoo-total-items').textContent = '共 0 件商品';
+        document.getElementById('yahoo-product-container').style.display = 'none';
+        document.getElementById('yahoo-total-items').style.display = 'none';
+        });
+
     </script>
 </body>
 </html>
-s
