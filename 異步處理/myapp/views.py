@@ -140,28 +140,34 @@ def pagination_search(request):
 
 def pagination_result(request):
     if request.method == 'POST':
+        print(request.POST)
+        product_name_pchome = request.POST.get('product_name_pchome')
+        scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
+        print(product_name_pchome)
+        print(scroll_count_pchome)
 
-            product_name_pchome = request.POST.get('product_name_pchome')
-            scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
+        product_name_momo = request.POST.get('product_name_momo')
+        momo_max_pages = int(request.POST.get('momo_max_pages', 5))
+        print(product_name_momo)
+        print(momo_max_pages)
 
-            product_name_momo = request.POST.get('product_name_momo')
-            max_pages_momo = int(request.POST.get('momo_max_pages', 5))
+        product_name_yahoo = request.POST.get('product_name_yahoo')
+        yahoo_max_pages = int(request.POST.get('yahoo_max_pages', 5))
+        print(product_name_yahoo)
+        print(yahoo_max_pages)
 
-            product_name_yahoo = request.POST.get('product_name_yahoo')
-            max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
-
-            context = {
-                'product_name_pchom': product_name_pchome,
+        context = {
+                'product_name_pchome': product_name_pchome,
                 'scroll_count_pchome': scroll_count_pchome,
 
                 'product_name_momo': product_name_momo,
-                'max_pages_momo': max_pages_momo,
+                'momo_max_pages': momo_max_pages,
 
                 'product_name_yahoo': product_name_yahoo,
-                'max_pages_yahoo': max_pages_yahoo,
-            }
+                'yahoo_max_pages': yahoo_max_pages,
+                }
 
-            return render(request, 'pagination_result.html', context)
+        return render(request, 'pagination_result.html', context)
 
 
 def test_but(request):

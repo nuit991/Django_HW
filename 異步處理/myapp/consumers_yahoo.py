@@ -36,7 +36,7 @@ class Yahoo_Consumer(AsyncWebsocketConsumer):
     #用于处理 WebSocket 客户端发送到服务器的消息。
     async def receive(self, text_data):  #text_data->前端丟的數據，這邊就是指product_name / max_pages
         #打印接收到的消息。这有助于调试，查看从客户端接收到的数据是什么。
-        print(f"Received data: {text_data}")
+        print(f"Yahoo_Received data: {text_data}")
         #将接收到的 JSON 字符串转换为 Python 字典。json.loads 函数用于解析 JSON 字符串并返回相应的字典对象。
         data = json.loads(text_data)
         #从解析后的字典中获取 product_name 的值。data.get 方法用于获取字典中的值，如果键不存在，则返回 None。
@@ -51,7 +51,7 @@ class Yahoo_Consumer(AsyncWebsocketConsumer):
 
     #定义一个异步方法 send_product_data，用于处理产品数据的发送。
     async def send_product_data(self, product_name, max_pages):
-        print("send_product_data called")
+        print("Yahoo_send_product_data called")
         #使用异步 for 循环从 scrape_momo_product 函数获取产品数据。
         async for prd_name, product_url, price, img_url in scrape_yahoo_product(product_name, max_pages): 
             data = {
