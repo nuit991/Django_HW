@@ -40,15 +40,15 @@ def search_pchome_product_view(request):
         #用来检查当前 HTTP 请求的方法是否为 POST，參考下方HTTP 请求方法
         product_name_pchome = request.POST.get('product_name_pchome')
         print(product_name_pchome)
-        scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
-        print(scroll_count_pchome)
+        pchome_max_pages = int(request.POST.get('pchome_max_pages', 5))
+        print(pchome_max_pages)
         #product_name 是從 <label for="product_name">請輸入要搜索的商品名稱：</label> 輸入得到
         #.get('product_name') 方法用于从 request.POST 字典中获取键为 product_name 的值。
 
 
         context = {
             'product_name_pchome': product_name_pchome,
-            'scroll_count_pchome': scroll_count_pchome,
+            'pchome_max_pages': pchome_max_pages,
         }
 
         #调用 scrape_pchome_product 的函数，并将 product_name 作为参数传递给该函数。
@@ -110,7 +110,7 @@ def search_products(request):
     if request.method == 'POST':
 
             product_name_pchome = request.POST.get('product_name_pchome')
-            scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
+            pchome_max_pages = int(request.POST.get('pchome_max_pages', 5))
 
             product_name_momo = request.POST.get('product_name_momo')
             max_pages_momo = int(request.POST.get('momo_max_pages', 5))
@@ -118,7 +118,7 @@ def search_products(request):
             product_name_yahoo = request.POST.get('product_name_yahoo')
             max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
 
-            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, scroll_count_pchome)
+            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, pchome_max_pages)
             momo_results, len_item_list_momo = scrape_momo_product(product_name_momo, max_pages_momo)
             yahoo_results, len_item_list_yahoo = scrape_yahoo_product(product_name_yahoo, max_pages_yahoo)
 
@@ -142,9 +142,9 @@ def pagination_result(request):
     if request.method == 'POST':
         print(request.POST)
         product_name_pchome = request.POST.get('product_name_pchome')
-        scroll_count_pchome = int(request.POST.get('scroll_count_pchome', 5))
+        pchome_max_pages = int(request.POST.get('pchome_max_pages', 5))
         print(product_name_pchome)
-        print(scroll_count_pchome)
+        print(pchome_max_pages)
 
         product_name_momo = request.POST.get('product_name_momo')
         momo_max_pages = int(request.POST.get('momo_max_pages', 5))
@@ -158,7 +158,7 @@ def pagination_result(request):
 
         context = {
                 'product_name_pchome': product_name_pchome,
-                'scroll_count_pchome': scroll_count_pchome,
+                'pchome_max_pages': pchome_max_pages,
 
                 'product_name_momo': product_name_momo,
                 'momo_max_pages': momo_max_pages,
