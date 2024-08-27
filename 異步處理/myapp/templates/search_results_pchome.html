@@ -60,7 +60,7 @@
     <script>
         //前端輸入的商品名稱跟頁數會丟過來
         const productNamePchome = "{{ product_name_pchome }}";
-        const maxPagesPchome = "{{ scroll_count_pchome }}";
+        const maxPagesPchome = "{{ pchome_max_pages }}";
         
         console.log('productNamePchome:', productNamePchome);
         console.log('maxPagesPchome:', maxPagesPchome);
@@ -83,7 +83,7 @@
                 //product_name: productName：将 productName 的值（通常是用户在前端输入的商品名称）发送给服务器，告诉服务器要搜索哪个商品。
                 'product_name_pchome': productNamePchome, 
                 //max_pages: maxPages：将 maxPages 的值（用户指定的最大搜索页数）发送给服务器，告诉服务器搜索的最大页数限制。
-                'scroll_count_pchome': maxPagesPchome
+                'pchome_max_pages': maxPagesPchome
             }));
         };
 

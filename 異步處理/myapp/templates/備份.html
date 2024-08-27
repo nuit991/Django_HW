@@ -54,31 +54,6 @@
         button {
             padding: 10px 20px;
         }
-
-        .container {
-            display: flex;
-            height: 100vh; /* 设置容器高度为视窗高度 */
-        }
-
-        .column {
-            flex: 1;
-            padding: 10px;
-            border-right: 1px solid #ddd;
-            overflow-y: auto; /* 当内容超出时添加垂直滚动条 */
-            height: calc(100vh - 40px); /* 使区块的高度适应屏幕，考虑到padding和标题高度 */
-        }
-
-        .column:last-child {
-            border-right: none; /* 移除最后一个区块的右边框 */
-        }
-
-        h2 {
-            text-align: center;
-            background-color: #f1f1f1;
-            padding: 10px;
-            margin-top: 0;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -98,66 +73,34 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="column" id="momo-column">
-            <h2>Momo商品结果</h2>
-            <div id="momo-product-container" class="product-row"></div>
-            <div id="momo-total-items">共 0 件商品</div>
-        </div>
+    <div id="momo-product-container" class="product-row" style="display: none;"></div>
+    <div id="momo-total-items" style="display: none;">共 0 件商品</div>
 
-        <div class="column" id="pchome-column">
-            <h2>PChome商品结果</h2>
-            <div id="pchome-product-container" class="product-row"></div>
-            <div id="pchome-total-items">共 0 件商品</div>
-        </div>
+    <div id="pchome-product-container" class="product-row" style="display: none;"></div>
+    <div id="pchome-total-items" style="display: none;">共 0 件商品</div>
 
-        <div class="column" id="yahoo-column">
-            <h2>Yahoo商品结果</h2>
-            <div id="yahoo-product-container" class="product-row"></div>
-            <div id="yahoo-total-items">共 0 件商品</div>
-        </div>
-    
-    </div>
-    
+    <div id="yahoo-product-container" class="product-row" style="display: none;"></div>
+    <div id="yahoo-total-items" style="display: none;">共 0 件商品</div>
+
     <script>
-        const productNameMomo = "{{ product_name_momo }}";
-        const maxPagesMomo = "{{ momo_max_pages }}";
+        
 
-        //console.log(productNameMomo)
-        //console.log(maxPagesMomo)
-
-        const productNamePchome = "{{ product_name_pchome }}";
-        const maxPagesPchome = "{{ pchome_max_pages }}";
-
-        //console.log(productNamePchome)
-        //console.log(maxPagesPchome)
-
-        const productNameYahoo = "{{ product_name_yahoo }}";
-        const maxPagesYahoo = "{{ yahoo_max_pages }}";
-
-        //console.log(productNameYahoo)
-        //console.log(maxPagesYahoo)
+        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
+        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
+        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
 
         function initializeWebSocket(target, productName, maxPages) {
-            const socket = new WebSocket(`ws://${window.location.host.replace(':8000', ':9000')}/ws/${target}/`);
-            console.log(`Initializing WebSocket for ${target}`);
-
+            const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/${target}/');
             socket.onopen = () => {
                 console.log(`WebSocket connection opened for ${target}`);
-                console.log(`Product Name: ${productName}`);
-                console.log(`Max Pages: ${maxPages}`);
                 socket.send(JSON.stringify({
                     command: 'start',
-                    [`product_name_${target}`]: productName,
+                    [`${target}_product_name`]: productName,
                     [`${target}_max_pages`]: maxPages
                 }));
-
             };
-
             socket.onmessage = event => {
                 const data = JSON.parse(event.data);
-                console.log(`Message received for ${target}:`, data);
-                
                 if (data.status === 'completed') {
                     console.log(`Data fetch completed for ${target}`);
                     socket.close();
@@ -177,15 +120,15 @@
                     totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
                 }
             };
-
             socket.onerror = error => console.error(`WebSocket Error for ${target}:`, error);
             socket.onclose = event => {
                 console.log(`WebSocket closed for ${target}`);
                 alert(`WebSocket connection closed for ${target}`);
             };
-
             return socket;
         }
+
+        
 
         function toggleDisplay(target, show) {
             document.getElementById(`${target}-product-container`).style.display = show ? 'flex' : 'none';
@@ -208,11 +151,6 @@
                 }
             });
         });
-
-        // 初始化 WebSocket
-        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
-        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
-        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
     </script>
 </body>
 </html>
