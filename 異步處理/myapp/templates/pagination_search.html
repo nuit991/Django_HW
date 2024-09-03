@@ -10,21 +10,21 @@
         {% csrf_token %}
         
         <div>
-            <label for="product_name_pchome">商品_PChome：</label> <!--這邊的product_name_pchome全部都要跟views.py裡的一樣-->
-            <input type="text" id="product_name_pchome" name="product_name_pchome" required>
-            <label for="pchome_max_pages">頁數：</label>
-            <input type="number" id="pchome_max_pages" name="pchome_max_pages" value="1" min="1" required><!--這邊的scroll_count全部都要跟views.py裡的一樣-->
-        </div>
-        <br>
-        
-        <div>
             <label for="product_name_momo">商品_Momo：</label>
             <input type="text" id="product_name_momo" name="product_name_momo" required>
             <label for="momo_max_pages">頁數：</label>
             <input type="number" id="momo_max_pages" name="momo_max_pages" value="1" min="1" required>
         </div>
         <br>
-        
+
+        <div>
+            <label for="product_name_pchome">商品_PChome：</label> <!--這邊的product_name_pchome全部都要跟views.py裡的一樣-->
+            <input type="text" id="product_name_pchome" name="product_name_pchome" required>
+            <label for="pchome_max_pages">頁數：</label>
+            <input type="number" id="pchome_max_pages" name="pchome_max_pages" value="1" min="1" required><!--這邊的scroll_count全部都要跟views.py裡的一樣-->
+        </div>
+        <br>     
+                
         <div>
             <label for="product_name_yahoo">商品_Yahoo：</label>
             <input type="text" id="product_name_yahoo" name="product_name_yahoo" required>

@@ -4,13 +4,44 @@
     <meta charset="UTF-8">
     <title>分頁顯示</title>
     <style>
+        /*
+        CSS套用，有加入就會套用該CSS的規則
+        EX:
+        1.長這樣的.product-row，前面的'.'不能省略，表示“选择所有带有这个类的元素”，用在class = ???
+        實際使用會長這樣 class="product-row"
+
+        2.長這樣的#total-items，前面的'#'不能省略，有特定ID属性的单个HTML元素，用在id = ???
+        實際使用會長這樣 id="total-items"
+
+        3.長這樣的h2，前面沒有'.'
+        實際使用會長這樣 <h2>Momo商品结果</h2>
+
+        */
         .product-row {
+            /*
+            1.display: flex;: 啟用Flexbox布局，使产品项可以在行中排列。
+            2.flex-wrap: wrap;: 如果行中的产品项过多，它们将自动换行显示。
+            3.justify-content: flex-start;: 产品项在行中从左向右排列。
+            4.gap: 20px;: 产品项之间的间距为20px。
+
+            */
+
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
             gap: 20px;
         }
         .product-item {
+            /*
+            1.width: 19%;: 每个产品项占行宽度的19%。
+            2.padding: 10px;: 内边距为10px。
+            3.box-sizing: border-box;: 包括padding和border在内计算宽度。
+            4.border: 1px solid #ddd;: 边框为浅灰色。
+            5.border-radius: 5px;: 边框圆角为5px。
+            6.background-color: #f9f9f9;: 背景颜色为浅灰色。
+            7.text-align: center;: 文本居中。
+
+            */
             width: 19%;
             padding: 10px;
             box-sizing: border-box;
@@ -20,14 +51,33 @@
             text-align: center;
         }
         .product-item img {
+            /*
+            1.max-width: 100%;: 图片最大宽度为容器的100%。
+            2.height: auto;: 图片高度自动调整，保持宽高比。
+            3.border-radius: 5px;: 图片边框圆角为5px。
+
+            */
             max-width: 100%;
             height: auto;
             border-radius: 5px;
         }
         .product-item h3, .product-item p {
+            /*
+            1.margin: 10px 0;: 标题和段落的上下外边距为10px。
+            
+            */
             margin: 10px 0;
         }
         .product-item a {
+            /*
+            1.display: inline-block;: 链接显示为内联块元素。
+            2.padding: 5px 10px;: 内边距为5px（上下）和10px（左右）。
+            3.background-color: #007bff;: 链接的背景色为蓝色。
+            4.color: #fff;: 文本颜色为白色。
+            5.text-decoration: none;: 移除文本装饰（如下划线）。
+            6.border-radius: 5px;: 链接的边框圆角为5px。
+
+            */
             display: inline-block;
             padding: 5px 10px;
             background-color: #007bff;
@@ -35,24 +85,82 @@
             text-decoration: none;
             border-radius: 5px;
         }
-        .product-item a:hover {
-            background-color: #0056b3;
-        }
-        #total-items {
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
+        
         .button-container {
+            /*
+            1.display: flex;: 使用Flexbox布局，使按钮容器中的内容水平排列。
+            2.gap: 10px;: 按钮之间的间距为10px。
+            */
             display: flex;
             gap: 10px;
         }
         .button-group {
+            /*
+            1.display: flex;: 使用Flexbox布局。
+            2.flex-direction: column;: 按钮垂直排列。
+            3.gap: 5px;: 按钮之间的间距为5px。
+
+            */
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
         button {
+            /*
+            1.padding: 10px 20px;: 按钮的内边距为10px（上下）和20px（左右）。
+
+            */
             padding: 10px 20px;
+        }
+
+        .container {
+            /*
+            1.display: flex;: 使整个容器使用Flexbox布局。
+            2.height: 100vh;: 容器高度设为视窗高度。
+
+            */
+            display: flex;
+            height: 100vh; /* 设置容器高度为视窗高度 */
+        }
+
+        .column {
+            /*
+            1.flex: 1;: 每个列块占据等宽空间。
+            2.padding: 10px;: 内边距为10px。
+            3.border-right: 1px solid #ddd;: 右侧边框为浅灰色。
+            4.overflow-y: auto;: 当内容超出时添加垂直滚动条。
+            5.height: calc(100vh - 40px);: 列块高度适应屏幕，减去padding和标题高度。
+
+            */
+            flex: 1;
+            padding: 10px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto; /* 当内容超出时添加垂直滚动条 */
+            height: calc(100vh - 40px); /* 使区块的高度适应屏幕，考虑到padding和标题高度 */
+        }
+
+        .column:last-child {
+            /*
+            1.border-right: none;: 移除最后一个列块的右边框。
+
+            */
+            border-right: none; /* 移除最后一个区块的右边框 */
+        }
+
+        h2 {
+            /*
+            1.text-align: center;: 标题文本居中。
+            2.background-color: #f1f1f1;: 背景颜色为浅灰色。
+            3.padding: 10px;: 内边距为10px。
+            4.margin-top: 0;: 顶部外边距为0。.
+            5.border-radius: 5px;: 边框圆角为5px。
+
+            */
+            text-align: center;
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin-top: 0;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -73,34 +181,66 @@
         </div>
     </div>
 
-    <div id="momo-product-container" class="product-row" style="display: none;"></div>
-    <div id="momo-total-items" style="display: none;">共 0 件商品</div>
+    <div class="container">
+        <div class="column" id="momo-column">
+            <h2>Momo商品结果</h2>
+            <div id="momo-product-container" class="product-row"></div>
+            <div id="momo-total-items">共 0 件商品</div>
+        </div>
 
-    <div id="pchome-product-container" class="product-row" style="display: none;"></div>
-    <div id="pchome-total-items" style="display: none;">共 0 件商品</div>
+        <div class="column" id="pchome-column">
+            <h2>PChome商品结果</h2>
+            <div id="pchome-product-container" class="product-row"></div>
+            <div id="pchome-total-items">共 0 件商品</div>
+        </div>
 
-    <div id="yahoo-product-container" class="product-row" style="display: none;"></div>
-    <div id="yahoo-total-items" style="display: none;">共 0 件商品</div>
-
+        <div class="column" id="yahoo-column">
+            <h2>Yahoo商品结果</h2>
+            <div id="yahoo-product-container" class="product-row"></div>
+            <div id="yahoo-total-items">共 0 件商品</div>
+        </div>
+    
+    </div>
+    
     <script>
-        
+        const productNameMomo = "{{ product_name_momo }}";
+        const maxPagesMomo = "{{ momo_max_pages }}";
 
-        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
-        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
-        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
+        //console.log(productNameMomo)
+        //console.log(maxPagesMomo)
+
+        const productNamePchome = "{{ product_name_pchome }}";
+        const maxPagesPchome = "{{ pchome_max_pages }}";
+
+        //console.log(productNamePchome)
+        //console.log(maxPagesPchome)
+
+        const productNameYahoo = "{{ product_name_yahoo }}";
+        const maxPagesYahoo = "{{ yahoo_max_pages }}";
+
+        //console.log(productNameYahoo)
+        //console.log(maxPagesYahoo)
 
         function initializeWebSocket(target, productName, maxPages) {
-            const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/${target}/');
+            const socket = new WebSocket(`ws://${window.location.host.replace(':8000', ':9000')}/ws/${target}/`);
+            console.log(`Initializing WebSocket for ${target}`);
+
             socket.onopen = () => {
                 console.log(`WebSocket connection opened for ${target}`);
+                console.log(`Product Name: ${productName}`);
+                console.log(`Max Pages: ${maxPages}`);
                 socket.send(JSON.stringify({
                     command: 'start',
-                    [`${target}_product_name`]: productName,
+                    [`product_name_${target}`]: productName,
                     [`${target}_max_pages`]: maxPages
                 }));
+
             };
+
             socket.onmessage = event => {
                 const data = JSON.parse(event.data);
+                console.log(`Message received for ${target}:`, data);
+                
                 if (data.status === 'completed') {
                     console.log(`Data fetch completed for ${target}`);
                     socket.close();
@@ -120,15 +260,15 @@
                     totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
                 }
             };
+
             socket.onerror = error => console.error(`WebSocket Error for ${target}:`, error);
             socket.onclose = event => {
                 console.log(`WebSocket closed for ${target}`);
                 alert(`WebSocket connection closed for ${target}`);
             };
+
             return socket;
         }
-
-        
 
         function toggleDisplay(target, show) {
             document.getElementById(`${target}-product-container`).style.display = show ? 'flex' : 'none';
@@ -151,6 +291,19 @@
                 }
             });
         });
+
+        // 初始化 WebSocket
+        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
+        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
+        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
     </script>
 </body>
 </html>
+
+<!--
+筆記:
+
+1.像是id="pchome-product-container"或是class="product-row"這種表示方式，通常最上面會有CSS的設定，如果沒有就只是單純方便其他地方使用所設定一個規範
+
+
+-->

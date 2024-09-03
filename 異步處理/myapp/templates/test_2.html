@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 选择器示例</title>
+    <style>
+        /* 针对 .loading-text 类的样式 */
+        .loading-text {
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        /* 直接针对 span 元素的样式 */
+        span {
+            color: blue;
+        }
+
+        /* 只针对特定父元素内的 .loading-text 元素 */
+        .loading-container {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <!-- 应用 .loading-text 样式 -->
+    <p class="loading-text">加载中... (这是使用 .loading-text 的元素)</p>
+
+    <!-- 不使用 .loading-text 样式，只应用通用的 span 样式 -->
+    <span>加载中...</span>
+
+    <!-- 在特定父元素中使用 .loading-text -->
+    <div class="loading-container">
+        <p class="loading-text">加载中... (这是在 .loading-container 内的 .loading-text 元素)</p>
+    </div>
+</body>
+</html>

@@ -1,40 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Counter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Top Example</title>
+    <style>
+        /* 默认外边距 */
+        .default-margin {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+
+        /* 顶部外边距为 0 像素 */
+        .margin-top-0 {
+            margin-top: 0;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+
+        /* 顶部外边距为 30 像素 */
+        .margin-top-30 {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>WebSocket Counter</h1>
-    <div id="counter">0</div>
-
-    <script>
-        const socket = new WebSocket('ws://' + window.location.host.replace(':8000', ':9000') + '/ws/counter/');
-
-        socket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-
-            if (data.img_url) {
-                const imgElement = document.createElement('img');
-                imgElement.src = data.img_url;
-                imgElement.alt = 'Image';
-                imgElement.style.display = 'block';  // 或使用其他样式
-                document.body.appendChild(imgElement);
-            }
-            
-        };
-
-        socket.onclose = function(e) {
-            console.error('WebSocket closed unexpectedly');
-        };
-
-        socket.onerror = function(error) {
-            console.error('WebSocket error:', error);
-        };
-
-        socket.onopen = function() {
-            console.log('WebSocket connection established');
-        };
-
-    </script>
+    <div class="default-margin">
+        Default margin-top: 20px
+    </div>
+    <div class="margin-top-0">
+        Margin-top: 0
+    </div>
+    <div class="margin-top-30">
+        Margin-top: 30px
+    </div>
 </body>
 </html>

@@ -31,13 +31,6 @@
     <h1>作業</h1>
     <!--這是一個標題，標示為主標題。-->
     <div class="button-container">
-        <!--<button onclick="location.href='{% url 'gym_page' %}'">Go to Gym People Count</button>-->  <!--這是一個按鈕，當按鈕被點擊時，會跳轉到名為 "gym_page" 的URL。-->
-        <!--
-        onclick="location.href='{% url 'gym_page' %}'"：這是一個 JavaScript 事件處理器。當按鈕被點擊時，JavaScript 將設置 location.href（即瀏覽器的當前 URL）為 {% url 'gym_page' %}。
-        {% url 'gym_page' %}: 這是一個 Django 模板標記，它會解析成對應的 URL 路徑。在你的 urls.py 文件中
-        在myapp/urls.py有這樣的一行path('gym-page/', home, name='gym_page')，這樣，{% url 'gym_page' %} 就會被解析成 /gym-page/，用戶點擊按鈕後，瀏覽器將跳轉到該 URL。
-        -->
-        <!--<button onclick="location.href='{% url 'buy_page' %}'">Go to Buy Page</button>-->
 
         <button onclick="location.href='{% url 'search_form_pchome' %}'">Search PChome Products</button>
 
@@ -45,11 +38,11 @@
 
         <button onclick="location.href='{% url 'search_form_yahoo' %}'">Search YAHOO Products</button>
 
-        <!--<button onclick="location.href='{% url 'search_form_all' %}'">搜索商品</button>-->
-
         <button onclick="location.href='{% url 'pagination_search' %}'">查看分頁示例</button>
 
         <button onclick="location.href='{% url 'test_but' %}'">測試用</button>
+
+        <button onclick="location.href='{% url 'test_2' %}'">test_2</button>
 
 
     </div>
