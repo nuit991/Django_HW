@@ -1,3 +1,4 @@
+#抓不到就一個一個慢慢定位，從父層開始定子層，慢慢定下來
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -34,14 +35,22 @@ def get_page_content(driver):
 
 #找到商品標籤，抓取名稱 / Url / 價錢 / 圖片
 async def parse_product_info(soup):
-    item_containers = soup.find_all('li', attrs={'gcode': True})
+    list_area_div = soup.find('div', class_='listArea')
+    item_containers = list_area_div.find('ul', class_='listAreaUl')
+    print(len(item_containers))
     for item_container in item_containers:
         prd_name = item_container.find('h3', class_='prdName').text.strip()
-        price = item_container.find('span', class_='price').text.strip()
-        product_url_good = item_container.find('a', class_='goodsUrl')['href']
-        product_url = 'https://www.momoshop.com.tw' + product_url_good
+
+        money_div = item_container.find('div', class_='money')
+        price = money_div.find('b').text.strip()
+
+        product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
+        product_url_1 = product_url_good.find('a', class_='goods-img-url')['href']
+        product_url = product_url_1
+
         img_tag = item_container.find('img', class_='prdImg')
         img_url = img_tag['src']
+
         print(img_url)
         yield prd_name, product_url, price, img_url
         await asyncio.sleep(1)  # 模拟数据生成的延迟
