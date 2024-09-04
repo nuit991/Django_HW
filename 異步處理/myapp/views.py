@@ -3,11 +3,11 @@
 
 from django.shortcuts import render #將一個模板和數據組合在一起，生成一個渲染後的 HTML 響應，然後將該響應返回給用戶端。
 from django.http import JsonResponse  #Django 框架中导入 JsonResponse 类的语句。它用于在 Django 视图中创建和返回 JSON 响应
-from .data_scraper_gym import scrape_data
+#from .data_scraper_gym import scrape_data
 from .data_scraper_buy_pchome import search_pchome_product as scrape_pchome_product
 from .data_scraper_buy_momo import search_momo_product as scrape_momo_product
 from .data_scraper_buy_yahoo import search_yahoo_product as scrape_yahoo_product
-from .AI import scrape_images as scrape_images
+#from .AI import scrape_images as scrape_images
 #from .tasks import start_websocket_task
 
 
@@ -15,19 +15,19 @@ def home(request):  #当用户第一次访问网站时，Django 会调用这个�
     gym_data = scrape_data()
     return render(request, 'home.html', {'gym_data': gym_data})
    
-
+'''
 def gym_data_api(request):  #用于提供动态数据更新的 API 端点。
     gym_data = scrape_data()
     return JsonResponse({'gym_data': gym_data})
-
+'''
 
 def index(request):
     return render(request, 'index.html')
 
-
+'''
 def buy_page(request):  # 更新視圖處理函數名稱
     return render(request, 'buy.html')
-
+'''
 
 def search_form_pchome(request):
     return render(request, 'search_form_pchome.html')
@@ -102,7 +102,7 @@ def search_yahoo_product_view(request):
 
 
 
-
+'''
 def search_form(request):
     return render(request, 'search_form_all.html')
 
@@ -133,7 +133,7 @@ def search_products(request):
 
             return render(request, 'search_results.html', context)
     return render(request, 'search_form_all.html')
-
+'''
 
 def pagination_search(request):
     return render(request, 'pagination_search.html')
@@ -176,6 +176,10 @@ def test_but(request):
 def test_res(request):
 
     return render(request, 'test_res.html')
+
+def test_2(request):
+
+    return render(request, 'test_2.html')
 
 
 '''

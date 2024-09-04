@@ -20,7 +20,7 @@ def initialize_driver():
 def search_product(driver, product_name):
     driver.get("https://24h.pchome.com.tw/")
     driver.implicitly_wait(10)
-    search_box = driver.find_element(By.XPATH, '//*[@id="root"]/div/header/div/div[1]/div/div/div/div/div[2]/input')
+    search_box = driver.find_element(By.XPATH, '//*[@id="root"]/div/header/div/div[1]/div/div/div/div[1]/div[2]/input')
     search_box.send_keys(product_name)
     search_box.send_keys(Keys.ENTER)
     time.sleep(10)  # 等待页面加载
