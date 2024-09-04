@@ -134,12 +134,13 @@
             console.error('WebSocket Error:', error);
         };
 
-        socket.onclose = function(event) {
-            console.log('WebSocket closed:', event);
-            if (resultsFetched) {
-                alert("WebSocket连接已关闭。");
-            }
-        };
+        socket.onclose = event => {
+                console.log(`WebSocket closed for momo`);
+                /*套用event打印關閉原因*/
+                console.log(`Reason: ${event.reason}`);
+                /*alert(...): 弹出警告框通知用户 WebSocket 连接已关闭。*/
+                alert(`WebSocket connection closed for momo`);
+            };
 
         document.getElementById('show-results').addEventListener('click', function() {
             document.getElementById('product-container').style.display = 'flex';

@@ -290,10 +290,7 @@
         //console.log(productNameYahoo)
         //console.log(maxPagesYahoo)
 
-        // 初始化 WebSocket
-        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
-        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
-        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
+        
 
         function initializeWebSocket(target, productName, maxPages) {
             const socket = new WebSocket(`ws://${window.location.host.replace(':8000', ':9000')}/ws/${target}/`);
@@ -457,7 +454,10 @@
             });
         });
 
-        
+        // 初始化 WebSocket
+        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
+        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
+        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
 
     </script>
 </body>
