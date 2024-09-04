@@ -29,19 +29,29 @@ def search_product(driver, product_name):
 def get_page_content(driver):
     html_source = driver.page_source
     soup = BeautifulSoup(html_source, 'html.parser')
+    #print('soup', soup)
     return soup
 
 #找到商品標籤，抓取名稱 / Url / 價錢 / 圖片
 def parse_product_info(soup):
     item_list = []
-    item_containers = soup.find_all('li', attrs={'gcode': True})
+    list_area_div = soup.find('div', class_='listArea')
+    item_containers = list_area_div.find('ul', class_='listAreaUl')
+    #print('item_containers', item_containers)
+    print(len(item_containers))
     for item_container in item_containers:
         prd_name = item_container.find('h3', class_='prdName').text.strip()
-        price = item_container.find('span', class_='price').text.strip()
-        product_url_good = item_container.find('a', class_='goodsUrl')['href']
-        product_url = 'https://www.momoshop.com.tw' + product_url_good
+        print('prd_name', prd_name)
+        money_div = item_container.find('div', class_='money')
+        price = money_div.find('b').text.strip()
+        print('price', price)
+        product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
+        product_url_1 = product_url_good.find('a', class_='goods-img-url')['href']
+        product_url = product_url_1
+        print('product_url', product_url)
         img_tag = item_container.find('img', class_='prdImg')
         img_url = img_tag['src']
+        print('img_url', img_url)
         item_list.append((prd_name, product_url, price, img_url))
     return item_list
 
@@ -114,10 +124,11 @@ def search_momo_product(product_name, max_pages):
     print("Reached maximum retries. Returning empty list.")
     return item_list, total_items
 
-'''
+
+
 # 要搜索的商品名称
 product_name = '冷氣'
-results, total_items = search_momo_product(product_name, max_pages=2)
+results, total_items = search_momo_product(product_name, max_pages=1)
 
 # 输出搜索结果
 for item in results:
@@ -126,4 +137,3 @@ for item in results:
     print(f"价格: {item[2]}")
     print(f"图片: {item[3]}")
     print("-" * 20)
-'''
