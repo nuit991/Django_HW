@@ -290,6 +290,11 @@
         //console.log(productNameYahoo)
         //console.log(maxPagesYahoo)
 
+        // 初始化 WebSocket
+        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
+        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
+        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
+
         function initializeWebSocket(target, productName, maxPages) {
             const socket = new WebSocket(`ws://${window.location.host.replace(':8000', ':9000')}/ws/${target}/`);
             console.log(`Initializing WebSocket for ${target}`);
@@ -379,44 +384,80 @@
                     totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;
                 }
             };
+            /*用于处理 WebSocket 连接中的错误。网络中断、协议错误或其他问题，这个事件处理器会被触发。*/
+            /*error: 这是传递给 onerror 事件处理器的参数，表示错误对象，包含了有关错误的详细信息。然後console再把他丟上去網頁的F12裡面*/
+            socket.onerror = error => console.error(`WebSocket Error for ${target}:`, error); /*最後的error是指錯誤的問題*/
 
-            socket.onerror = error => console.error(`WebSocket Error for ${target}:`, error);
+            /*socket.onclose: 这是 WebSocket 对象的 onclose 事件处理器。它会在 WebSocket 连接关闭时被触发。*/
             socket.onclose = event => {
                 console.log(`WebSocket closed for ${target}`);
+                /*套用event打印關閉原因*/
+                console.log(`Reason: ${event.reason}`);
+                /*alert(...): 弹出警告框通知用户 WebSocket 连接已关闭。*/
                 alert(`WebSocket connection closed for ${target}`);
             };
 
             return socket;
         }
-
+        /*显示或隐藏网页上的特定元素*/
+        /*show 是一个布尔值 (true顯示 或 false隱藏)，用来决定是否显示元素。*/
         function toggleDisplay(target, show) {
+            /*
+            这是一个条件（三元）运算符，用于设置元素的 display 样式属性
+            如果 show 为 true，display 将被设置为 'flex'（使元素以 Flexbox 布局显示）。
+            如果 show 为 false，display 将被设置为 'none'（隐藏元素）。   
+
+            如果 show 为 true，display 被设置为 'block'（使元素以块状布局显示）。
+            如果 show 为 false，display 被设置为 'none'（隐藏元素）。         
+            */
             document.getElementById(`${target}-product-container`).style.display = show ? 'flex' : 'none';
             document.getElementById(`${target}-total-items`).style.display = show ? 'block' : 'none';
         }
 
+        /*清空按鈕的函數*/
+        /*target = Pchome / Momo / Yahoo*/
+        /*被呼叫之後就會清空那個target的內容*/
         function clearResults(target) {
+            /*.innerHTML = ''; 将该元素的 innerHTML 属性设为空字符串 ''，即清空该容器中的所有内容，删除其中所有的商品项。*/
             document.getElementById(`${target}-product-container`).innerHTML = '';
+            /*清空之後把商品數量變為0*/
             document.getElementById(`${target}-total-items`).textContent = '共 0 件商品';
         }
 
+        /*这段代码的作用是在页面上找到所有 .button-container 内的按钮元素，然后为每一个按钮添加点击事件处理程序。
+            通过这种方式，网页可以响应用户对这些按钮的点击操作，并执行相应的逻辑。*/
+        /*document 是代表整个网页的对象，可以通过它访问网页上的元素。*/
+        /*document.querySelectorAll() 是一个 DOM 方法，用于选择所有匹配指定 CSS 选择器的元素。*/
+        /*'.button-container button' 是 CSS 选择器，它选择所有位于 .button-container 类元素内部的 <button> 元素。*/
+        /*.forEach(button => {...})，forEach() 是一个数组方法，用于遍历 NodeList 中的每一个按钮元素。button 是回调函数的参数，代表当前遍历到的按钮元素。*/
+        /*button => {...} 是一个箭头函数，用于对遍历到的每个按钮元素执行一些操作。*/
         document.querySelectorAll('.button-container button').forEach(button => {
+            /*button.addEventListener('click', () => {...}) 这段代码的作用是为每个 button 元素添加一个点击事件处理程序。*/
+            /*button 是一个 HTML 元素（在这个例子中，是一个 <button> 元素）。*/
+            /*addEventListener() 是一个方法，用于向指定元素添加事件监听器。事件监听器会监听特定的事件（如点击、鼠标悬停等，這邊是指click），并在事件发生时执行某个函数。*/
+            /*'click' 是事件的类型，表示监听的是点击事件。当用户点击这个按钮时，监听器会被触发。*/
+            /*() => {...} 是一个箭头函数，用于定义点击事件发生时要执行的代码。当用户点击按钮时，这个箭头函数中的代码块会被执行。*/
+            /*()代表參數內容，沒有就是空的，但不能不寫*/
             button.addEventListener('click', () => {
+                /*const target = ...;:将 getAttribute('data-target') 获取的值赋给 target 变量。*/
+                /*因為document.querySelectorAll('.button-container button').forEach(button => {...}，button 变量会被依次赋值为当前遍历到的按钮。*/
+                /*getAttribute('data-target') 方法用于获取按钮上 data-target 属性的值。*/
                 const target = button.getAttribute('data-target');
+                /*如果抓到的data-action是clear，上面清除按鈕有給data-action這個分類*/
                 if (button.getAttribute('data-action') === 'clear') {
+                    /*調用clearResults這個函數(在上面)*/
                     clearResults(target);
+                    /*在調用toggleDisplay函數*/
+                    /*清除商品按鈕觸發之後除了清空容器裡的東西，還要隱藏網頁的內容*/
                     toggleDisplay(target, false);
                 } else {
+                    /*否則調用toggleDisplay函數後給false不做隱藏網頁內容*/
                     toggleDisplay(target, true);
                 }
             });
         });
 
-        // 初始化 WebSocket
-        const socketMomo = initializeWebSocket('momo', productNameMomo, maxPagesMomo);
-        const socketPchome = initializeWebSocket('pchome', productNamePchome, maxPagesPchome);
-        const socketYahoo = initializeWebSocket('yahoo', productNameYahoo, maxPagesYahoo);
-
-
+        
 
     </script>
 </body>
@@ -451,4 +492,40 @@ productItem.innerHTML =
 然後const currentCount = parseInt(totalItemsElement.textContent.match(/\d+/)) || 0;會去抓所有商品的數量
 最後totalItemsElement.textContent = `共 ${currentCount + 1} 件商品`;更新數量
 
+
+
+
+1. button => {...}
+这是箭头函数的参数。这里的 button 代表通过 document.querySelectorAll 选取到的每一个按钮元素。在 forEach 循环中，button 是当前被遍历的按钮。
+
+javascript
+複製程式碼
+document.querySelectorAll('.button-container button').forEach(button => {
+    // 在这里，button 代表当前遍历的按钮元素
+});
+
+------------
+2. button.addEventListener('click', () => {...})
+这里的 button 是在上面的 forEach 循环中定义的当前按钮元素。我们给这个按钮元素添加了一个点击事件监听器，当按钮被点击时，会执行箭头函数中的代码。
+
+javascript
+複製程式碼
+button.addEventListener('click', () => {
+    // 在这里，button 仍然是当前处理的按钮元素
+});
+
+------------
+3. const target = button.getAttribute('data-target');
+在这行代码中，button 仍然是指在 forEach 循环中当前处理的按钮元素。button.getAttribute('data-target') 是用来获取这个按钮的 data-target 属性的值，并将其存储在 target 常量中。
+
+javascript
+複製程式碼
+const target = button.getAttribute('data-target');
+// 在这里，button 是当前处理的按钮元素
+
+------------
+在 forEach 循环的上下文中，button 是每次迭代的当前按钮元素。
+在 button.addEventListener 中，button 是指当前正在处理的按钮元素，并对它添加事件监听器。
+在 button.getAttribute('data-target') 中，button 是用来从当前按钮元素中获取属性值的。
+虽然它们在不同的上下文中被使用，但它们都指向相同的按钮元素。
 -->
