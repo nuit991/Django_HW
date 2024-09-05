@@ -316,6 +316,8 @@
                 // 显示 loading 图示
                 const loadingElement = document.getElementById(`loading-${target}`);
                 if (loadingElement) {
+                    /*loadingElement.style.display = 'inline-block'; 这样写的原因是为了显示一个加载动画或图标，同时保证它在布局中可以并排显示，但又能控制其宽度和高度。*/
+                    /*延伸解釋在下面*/
                     loadingElement.style.display = 'inline-block';
                 } else {
                     console.error(`Loading element with ID 'loading-${target}' not found.`);
@@ -528,4 +530,32 @@ const target = button.getAttribute('data-target');
 在 button.addEventListener 中，button 是指当前正在处理的按钮元素，并对它添加事件监听器。
 在 button.getAttribute('data-target') 中，button 是用来从当前按钮元素中获取属性值的。
 虽然它们在不同的上下文中被使用，但它们都指向相同的按钮元素。
+
+------------
+const loadingElement = document.getElementById(`loading-${target}`);
+    if (loadingElement) {
+        /*loadingElement.style.display = 'inline-block'; 这样写的原因是为了显示一个加载动画或图标，同时保证它在布局中可以并排显示，但又能控制其宽度和高度。*/
+        /*延伸解釋在下面*/
+        loadingElement.style.display = 'inline-block';
+    else {
+        console.error(`Loading element with ID 'loading-${target}' not found.`);
+        }
+
+這邊的具體步驟
+1.這邊先定義const loadingElement = document.getElementById(`loading-${target}`);，這邊會去抓div裡面loading-${target}的項目(EX : loading-yahoo)
+2.然後到 loadingElement.style.display = 'inline-block'，他會繼承const loadingElement = ....這邊的CSS
+3.然後就要去找div裡面有loading-yahoo的項目，長這樣<h2><span>Yahoo商品结果</span><div id="loading-yahoo" class="spinner" style="display: none;"></div></h2>
+4.接著他會去套用class="spinner"，再去CSS找spinner確認他套用了甚麼
+
+
+loadingElement.style.display = 'inline-block'; 这样写的原因是为了显示一个加载动画或图标，同时保证它在布局中可以并排显示，但又能控制其宽度和高度。
+为什么不用 inline 或 block？
+不使用 inline：如果你用 inline，虽然可以实现并排显示，但你不能设置元素的宽度和高度，这对显示一些特定大小的加载图标可能不够灵活。
+不使用 block：block 元素会独占一整行，意味着加载图标会占据一行的位置，无法并排显示在其他元素旁边，影响页面的布局。
+
+
+
+
+
+
 -->
