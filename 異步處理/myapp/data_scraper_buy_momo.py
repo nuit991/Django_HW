@@ -36,17 +36,16 @@ def get_page_content(driver):
 #找到商品標籤，抓取名稱 / Url / 價錢 / 圖片
 async def parse_product_info(soup):
     list_area_div = soup.find('div', class_='listArea')
-    item_containers = list_area_div.find('ul', class_='listAreaUl')
+    item_containers = list_area_div.find('ul', class_='clearfix')
+    #print('item_containers', item_containers)
     print(len(item_containers))
     for item_container in item_containers:
         prd_name = item_container.find('h3', class_='prdName').text.strip()
 
-        money_div = item_container.find('div', class_='money')
-        price = money_div.find('b').text.strip()
+        money_div = item_container.find('p', class_='money')
+        price = money_div.find('span', class_='price').text.strip()
 
-        product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
-        product_url_1 = product_url_good.find('a', class_='goods-img-url')['href']
-        product_url = product_url_1
+        product_url = 'https://www.momoshop.com.tw' + item_container.find('a', class_='goodsUrl')['href']
 
         img_tag = item_container.find('img', class_='prdImg')
         img_url = img_tag['src']
