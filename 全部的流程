@@ -5,12 +5,16 @@
 Daphne 是用于运行 Django Channels 项目的 ASGI 服务器。它支持 WebSocket、HTTP2、长轮询等协议，并用于处理异步请求。
 使用 Daphne 来运行 Django 项目，尤其是涉及 WebSocket 或实时通信时，是常见的选择。
 這邊要處理Daphne + WebSocket
+
+
 3.先處理Daphne
-cmd 直接下 pip install daphne
+cmd 下 
+pip install daphne 
+pip install daphne channels
 
 回到Django那堆資料夾裡面，有Project_1 跟 myapp，選擇Project_1這個
 
-新增asgi.py
+A.新增Porject_1/asgi.py
 輸入
 
 # myproject/asgi.py
@@ -33,3 +37,52 @@ application = ProtocolTypeRouter({
         )
     ),
 })
+
+-------------
+B.處理Porject_1/urls.py
+#这是导入 Django 自带的管理模块，用于启用 Django 管理后台。
+from django.contrib import admin
+
+#path：Django 中的 URL 路由方法，用于将某个特定 URL 路径与一个视图函数或包含文件关联起来。
+#include：允许你将其他 URL 配置文件包含进来，便于管理不同应用的 URL 路由，尤其当项目变大时。
+from django.urls import path, include
+
+urlpatterns = [
+    #当用户访问 http://yourdomain.com/admin/ 时，Django 会将请求交给 admin.site.urls 处理。
+    #admin.site.urls 是 Django 内置的管理后台的 URL 配置，通常用来访问 Django 管理后台界面。
+    path('admin/', admin.site.urls),
+    #这里的 path('', ...) 表示当用户访问网站根路径（如 http://yourdomain.com/）时，Django 将请求交给 myapp.urls 处理。
+    #include('myapp.urls') 会将请求路由到 myapp 应用中的 urls.py 文件中去寻找更多的 URL 路由定义。这种方式使得你可以在不同的 Django 应用中各自管理自己的 URL 路由，保持项目的可维护性。
+    path('', include('myapp.urls')),
+]
+
+'''
+網頁上輸入127.0.0.1，會先到這邊詢問path('', include('myapp.urls'))，然後這邊再去myapp/urls.py裡面詢問
+'''
+
+-------------
+C.更改Porject_1/settings.py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # 你的应用
+    'myapp', #這個是增加的
+    # 添加 channels 以支持 ASGI
+    'channels', #這個是增加的 
+]
+
+#處理異部
+ASGI_APPLICATION = 'Project_1.asgi.application' #添加 ASGI_APPLICATION 设置，这会告诉Django使用 asgi.py 文件作为ASGI入口点
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+-------------
+D.
