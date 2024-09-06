@@ -1,12 +1,13 @@
 1.安裝python，打勾第3方那個框框
 
+-------------
 2.安裝VS Code，VS Code裡面下載python
 
 Daphne 是用于运行 Django Channels 项目的 ASGI 服务器。它支持 WebSocket、HTTP2、长轮询等协议，并用于处理异步请求。
 使用 Daphne 来运行 Django 项目，尤其是涉及 WebSocket 或实时通信时，是常见的选择。
 這邊要處理Daphne + WebSocket
 
-
+-------------
 3.先處理Daphne
 cmd 下 
 pip install daphne 
@@ -14,6 +15,7 @@ pip install daphne channels
 
 回到Django那堆資料夾裡面，有Project_1 跟 myapp，選擇Project_1這個
 
+-------------
 A.新增Porject_1/asgi.py
 輸入
 
