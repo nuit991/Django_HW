@@ -5,13 +5,72 @@ urls.py引導
 搜尋 pagination_search
 結果 pagination_result
 
+-------------
 後端
 爬蟲程式 data_scraper
 異步處理 consumers
 路由 routing
 
+-------------
+-------------
 
+1.處理views.py + urls.py
+views.py 網頁渲然的東西
+urls.py 引導
+EX: (主頁，127.0.0.1)
+def index(request):
+    return render(request, 'index.html')
 
-1.處理views.py
+urls.py讀到views.py的def index(request)就會把網頁引導到對應的畫面
+urlpatterns = [
+    # ''是空字符串，代表网站的根路径，長這樣http://127.0.0.1:8000/
+    path('', views.index, name = 'index'),  # 這個是你的首頁
 
+    ]
 
+-------------
+2.依照本專案
+
+views.py寫入
+
+搜尋頁面:
+def pagination_search(request):
+    return render(request, 'pagination_search.html')
+
+結果頁面:
+這邊只要顯示出畫面就好，結果會從異步進來
+在搜尋頁面拿到的資料 (EX:3家的商品名稱跟頁數)會丟給結果頁面，結果再丟到後端給異步處理
+這裡必須注意，使用的名稱要統一(EX:'product_name_pchome' / 'pchome_max_pages'，前端到後端，不然有問題要一直找)
+def pagination_result(request):
+    if request.method == 'POST':
+        print(request.POST)
+        product_name_pchome = request.POST.get('product_name_pchome')
+        pchome_max_pages = int(request.POST.get('pchome_max_pages', 5))
+        print(product_name_pchome)
+        print(pchome_max_pages)
+
+        product_name_momo = request.POST.get('product_name_momo')
+        momo_max_pages = int(request.POST.get('momo_max_pages', 5))
+        print(product_name_momo)
+        print(momo_max_pages)
+
+        product_name_yahoo = request.POST.get('product_name_yahoo')
+        yahoo_max_pages = int(request.POST.get('yahoo_max_pages', 5))
+        print(product_name_yahoo)
+        print(yahoo_max_pages)
+
+        context = {
+                'product_name_pchome': product_name_pchome,
+                'pchome_max_pages': pchome_max_pages,
+
+                'product_name_momo': product_name_momo,
+                'momo_max_pages': momo_max_pages,
+
+                'product_name_yahoo': product_name_yahoo,
+                'yahoo_max_pages': yahoo_max_pages,
+                }
+
+        return render(request, 'pagination_result.html', context)
+
+-------------
+3.
