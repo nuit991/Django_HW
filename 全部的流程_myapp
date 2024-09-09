@@ -13,6 +13,7 @@ urls.py引導
 
 -------------
 -------------
+前端處理
 
 1.處理views.py + urls.py
 views.py 網頁渲然的東西
@@ -102,3 +103,5 @@ c.'pagination_result/' : 分頁顯示
 2.各個consumer_XXX.py會再呼叫data_scraper_buy_XXX.py後端爬蟲程式
 3.完成之後data_scraper_buy_XXX.py再把結果丟回去consumer_XXX.py
 4.consumer_XXX.py會再把結果丟回到pagination_result.html
+
+因為使用異步處理，所以抓一筆就會丟一筆，不會等到所有東西抓完才顯示結果
