@@ -31,16 +31,15 @@ urlpatterns = [
 -------------
 2.依照本專案
 
-views.py寫入
 
 搜尋頁面:
 def pagination_search(request):
     return render(request, 'pagination_search.html')
 
 結果頁面:
-這邊只要顯示出畫面就好，結果會從異步進來
-在搜尋頁面拿到的資料 (EX:3家的商品名稱跟頁數)會丟給結果頁面，結果再丟到後端給異步處理
-這裡必須注意，使用的名稱要統一(EX:'product_name_pchome' / 'pchome_max_pages'，前端到後端，不然有問題要一直找)
+A.這邊只要顯示出畫面就好(EX:佈好的分類)，結果會從異步進來
+B.在搜尋頁面拿到的資料 (EX:3家的商品名稱跟頁數)會丟給結果頁面，結果再丟到後端給異步處理
+C.這裡必須注意，使用的名稱要統一(EX:'product_name_pchome' / 'pchome_max_pages'，前端到後端，不然有問題要找很麻煩)
 def pagination_result(request):
     if request.method == 'POST':
         print(request.POST)
@@ -73,4 +72,33 @@ def pagination_result(request):
         return render(request, 'pagination_result.html', context)
 
 -------------
-3.
+3.urls.py 引導
+A.這邊會匯入views.py的設定
+
+
+from django.urls import path
+#from .views import home, gym_data_api, index, buy_page, search_pchome_product_view, search_form_pchome,search_momo_product_view, search_form_momo
+from . import views #直接匯入views.py比較快
+
+urlpatterns = [
+    path('pagination_search/', views.pagination_search, name='pagination_search'),
+    path('pagination_result/', views.pagination_result, name='pagination_result'),
+]
+a.''是空字符串 : 主頁 127.0.0.1/
+b.'pagination_search/' : 查看分頁示例 
+c.'pagination_result/' : 分頁顯示
+
+
+-------------
+-------------
+後端處理
+
+搜尋頁面輸入完資料後會把東西丟給結果頁面
+結果頁面會先跑出基本得佈局，跑到JS的部分後開始處理JS
+
+拿到的資料 (3家的商品名稱 / 3家的頁數)
+
+1.前端的 WebSocket打開之後把東西丟給 consumer_XXX.py (3家的會一起丟)
+2.各個consumer_XXX.py會再呼叫data_scraper_buy_XXX.py後端爬蟲程式
+3.完成之後data_scraper_buy_XXX.py再把結果丟回去consumer_XXX.py
+4.consumer_XXX.py會再把結果丟回到pagination_result.html
