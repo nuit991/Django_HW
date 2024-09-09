@@ -152,6 +152,41 @@ f.等到後端爬蟲結束會丟一個await self.send(text_data=json.dumps({'sta
 -------------
 顯示跟清除處理
 
+A.這邊抓出所有按鈕標籤document.querySelectorAll('.button-container button').forEach(button => ，然後button.addEventListener('click', () => 監聽到按鈕被點擊時動作
+
+B.這邊const target = button.getAttribute('data-target')抓所有按鈕data-target中的值 (Pchome / Momo / Yahoo)
+a.if (button.getAttribute('data-action') === 'clear')如果('data-action')是clear就執行 
+clearResults(target) : 
+/*清空按鈕的函數*/
+        /*target = Pchome / Momo / Yahoo*/
+        /*被呼叫之後就會清空那個target的內容*/
+        function clearResults(target) {
+            /*.innerHTML = ''; 将该元素的 innerHTML 属性设为空字符串 ''，即清空该容器中的所有内容，删除其中所有的商品项。*/
+            document.getElementById(`${target}-product-container`).innerHTML = '';
+            /*清空之後把商品數量變為0*/
+            document.getElementById(`${target}-total-items`).textContent = '共 0 件商品';
+        }
+-------------
+toggleDisplay(target, false) : 
+/*显示或隐藏网页上的特定元素*/
+        /*show 是一个布尔值 (true顯示 或 false隱藏)，用来决定是否显示元素。*/
+        function toggleDisplay(target, show) {
+            /*
+            这是一个条件（三元）运算符，用于设置元素的 display 样式属性
+            如果 show 为 true，display 将被设置为 'flex'（使元素以 Flexbox 布局显示）。
+            如果 show 为 false，display 将被设置为 'none'（隐藏元素）。   
+
+            如果 show 为 true，display 被设置为 'block'（使元素以块状布局显示）。
+            如果 show 为 false，display 被设置为 'none'（隐藏元素）。         
+            */
+            document.getElementById(`${target}-product-container`).style.display = show ? 'flex' : 'none';
+            document.getElementById(`${target}-total-items`).style.display = show ? 'block' : 'none';
+        }
+
+否則顯示結果
+因為有做一個顯示的按鈕，長這樣
+<button data-target="momo">Momo商品结果</button>
+按下去之後會依照toggleDisplay(target, true)去執行
 
 
 
