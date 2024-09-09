@@ -95,7 +95,7 @@ c.'pagination_result/' : 分頁顯示
 後端處理
 
 搜尋頁面輸入完資料後會把東西丟給結果頁面
-結果頁面會先跑出基本得佈局，跑到JS的部分後開始處理JS
+結果頁面會先跑出基本佈局，跑到JS的部分後開始處理JS
 
 拿到的資料 (3家的商品名稱 / 3家的頁數)
 
@@ -105,3 +105,57 @@ c.'pagination_result/' : 分頁顯示
 4.consumer_XXX.py會再把結果丟回到pagination_result.html
 
 因為使用異步處理，所以抓一筆就會丟一筆，不會等到所有東西抓完才顯示結果
+
+-------------
+WebSocket處理:
+A.當程式跑到const socket = new WebSocket(`ws://${window.location.host.replace(':8000', ':9000')}/ws/${target}/`);
+PS: 
+這邊.replace(':8000', ':9000')是因為 8000給Django，所以daphne改成9000來啟動
+啟動指令 daphne -p 9000 Project_1.asgi:application
+
+會啟動WebSocket(這邊僅確認連接)，這邊會依照routing.py所設定，分別呼叫對應的consumers_XXX.py
+
+-------------
+B.然後跑到socket.onopen，當WebSocket連接成功就會開啟
+這邊開始就會傳送3個東西
+1.command: 'start'
+2.[`product_name_${target}`]: productName  (商品名稱)
+3.[`${target}_max_pages`]: maxPages (要搜索的頁數)
+
+-------------
+C.然後開始執行loading圖案程式 ， const loadingElement = document.getElementById(`loading-${target}`);
+1.基本上就是在抓資料的過程跑loading圖案，做一個確認程式有再執行的判斷
+
+-------------
+D.然後跑到consumers_XXX.py
+
+a.async def connect(self) 
+開啟連接
+
+b.async def disconnect(self, close_code) 
+斷開處理
+
+c.async def receive(self, text_data)
+接收，因為前端有丟東西過來(商品名稱/頁數)所以要加這個
+
+d.async def send_product_data(self, product_name, max_pages) 
+receive收到的資料會丟到這邊，然後呼叫 scrape_XXX_product(product_name, max_pages)，丟給爬蟲程式
+
+e.爬完之後再丟回來到consumers_XXX.py，consumers_XXX.py會再丟到pagination_result.html給socket.onmessage = event =>，socket.onmessage = event =>會把結果呈現到網頁上
+
+f.等到後端爬蟲結束會丟一個await self.send(text_data=json.dumps({'status': 'completed'}))給socket.onmessage = event => 
+等socket.onmessage = event =>拿到之後會停止WebSocket的連接，然後也停止loading的圖案
+最後socket.onclose = event => 會顯示一個完成的視窗
+
+
+-------------
+-------------
+顯示跟清除處理
+
+
+
+
+
+
+
+
