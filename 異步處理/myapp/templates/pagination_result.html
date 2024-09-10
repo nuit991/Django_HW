@@ -194,7 +194,15 @@
         /**/
         .header {
             display: flex;
-            align-items: center; /* 垂直居中对齐 */
+            /*align-items->垂直排列*/
+            /*center->置中
+            其他還有
+            1.flex-start：将子项目对齐到容器的顶部（交叉轴的起始位置）。
+            2.flex-end：将子项目对齐到容器的底部（交叉轴的末尾位置）。
+            3.baseline：将子项目对齐到它们的文本基线。这通常用于处理文本和行高对齐的情况。
+            
+            */
+            align-items: center; 
             gap: 10px; /* 标题和图示之间的间距 */
             padding: 20px; /* 内边距20px，內邊距就是假設有一個按鈕，它裡面的字跟按鈕的框之間的距離稱為內邊距 */
             background-color: #fff; /* 背景色 */
