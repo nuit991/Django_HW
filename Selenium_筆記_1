@@ -17,3 +17,22 @@ search_box = driver.find_element(By.XPATH, '//*[@id="root"]/div/header/div/div[1
 
 # 在搜索欄位中輸入文字
 search_box.send_keys("iPhone 15 Pro 256G")
+
+
+有時候定位不到要從最上層開始，不要用findall
+EX:
+#先定全部的商品範圍
+item_containers = list_area_div.find('ul', class_='clearfix')
+
+#再一一分出下面的商品
+prd_name = item_container.find('h3', class_='prdName').text.strip()
+
+#假設還是不行那一定有多層結構，就再慢慢分層定位
+money_div = item_container.find('p', class_='money')
+price = money_div.find('span', class_='price').text.strip()
+
+
+如果直接這樣寫
+item_container.find('h3', class_='prdName').text.strip()
+當item_container = None會直接跳錯，然後斷開
+
