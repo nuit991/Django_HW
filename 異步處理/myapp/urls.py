@@ -3,25 +3,20 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name = 'index'),  # 這個是你的首頁,
+    # ''是空字符串，代表网站的根路径，長這樣http://127.0.0.1:8000/
+    path('', views.index, name = 'index'),  # 這個是你的首頁
 
-    
-    #path('gym-page/', views.home, name = 'gym_page'),
-    #path('buy-page/', views.buy_page, name='buy_page'),
-    #path('api/gym-data/', views.gym_data_api, name = 'gym_data_api'),
-    
 
     path('search-form-pchome/', views.search_form_pchome, name='search_form_pchome'),
     path('search-pchome-product/', views.search_pchome_product_view, name='search_pchome_product'),
 
+
     path('search-form-momo/', views.search_form_momo, name='search_form_momo'),
     path('search-momo-product/', views.search_momo_product_view, name='search_momo_product'),
 
+
     path('search-form-yahoo/', views.search_form_yahoo, name='search_form_yahoo'),
     path('search-yahoo-product/', views.search_yahoo_product_view, name='search_yahoo_product'),
-
-    #path('search-form/', views.search_form, name='search_form_all'),
-    #path('search-products/', views.search_products, name='search_products'),
 
 
     path('pagination_search/', views.pagination_search, name='pagination_search'),
@@ -30,6 +25,7 @@ urlpatterns = [
 
     path('test-but/', views.test_but, name='test_but'),
     path('test_res/', views.test_res, name='test_res'),
+
 
     path('test_2/', views.test_2, name='test_2'),
 

@@ -11,23 +11,8 @@ from .data_scraper_buy_yahoo import search_yahoo_product as scrape_yahoo_product
 #from .tasks import start_websocket_task
 
 
-def home(request):  #当用户第一次访问网站时，Django 会调用这个视图。
-    gym_data = scrape_data()
-    return render(request, 'home.html', {'gym_data': gym_data})
-   
-'''
-def gym_data_api(request):  #用于提供动态数据更新的 API 端点。
-    gym_data = scrape_data()
-    return JsonResponse({'gym_data': gym_data})
-'''
-
 def index(request):
     return render(request, 'index.html')
-
-'''
-def buy_page(request):  # 更新視圖處理函數名稱
-    return render(request, 'buy.html')
-'''
 
 def search_form_pchome(request):
     return render(request, 'search_form_pchome.html')
@@ -101,39 +86,6 @@ def search_yahoo_product_view(request):
         #簡單來說results的結果會套用到search_results_pchome.html裡面
 
 
-
-'''
-def search_form(request):
-    return render(request, 'search_form_all.html')
-
-def search_products(request):
-    if request.method == 'POST':
-
-            product_name_pchome = request.POST.get('product_name_pchome')
-            pchome_max_pages = int(request.POST.get('pchome_max_pages', 5))
-
-            product_name_momo = request.POST.get('product_name_momo')
-            max_pages_momo = int(request.POST.get('momo_max_pages', 5))
-
-            product_name_yahoo = request.POST.get('product_name_yahoo')
-            max_pages_yahoo = int(request.POST.get('yahoo_max_pages', 5))
-
-            pchome_results, len_item_list_pchome = scrape_pchome_product(product_name_pchome, pchome_max_pages)
-            momo_results, len_item_list_momo = scrape_momo_product(product_name_momo, max_pages_momo)
-            yahoo_results, len_item_list_yahoo = scrape_yahoo_product(product_name_yahoo, max_pages_yahoo)
-
-            context = {
-                'pchome_results': pchome_results,
-                'len_item_list_pchome': len_item_list_pchome,
-                'momo_results': momo_results,
-                'len_item_list_momo': len_item_list_momo,
-                'yahoo_results': yahoo_results,
-                'len_item_list_yahoo': len_item_list_yahoo,
-            }
-
-            return render(request, 'search_results.html', context)
-    return render(request, 'search_form_all.html')
-'''
 
 def pagination_search(request):
     return render(request, 'pagination_search.html')
