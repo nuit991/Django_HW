@@ -34,6 +34,7 @@ urlpatterns = [
 
 
 '''
+
 網頁上輸入127.0.0.1，會先到這邊詢問path('', include('myapp.urls'))，然後這邊再去myapp/urls.py裡面詢問
 
 '''
