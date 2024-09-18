@@ -92,8 +92,13 @@ INSTALLED_APPS = [
 
 #處理異部
 ASGI_APPLICATION = 'Project_1.asgi.application' #添加 ASGI_APPLICATION 设置，这会告诉Django使用 asgi.py 文件作为ASGI入口点
+# CHANNEL_LAYERS 用于配置消息的传递和存储。
+# WebSocket 是一种全双工通信协议，允许服务器和客户端之间实时双向通信。Django Channels 使用 CHANNEL_LAYERS 来处理 WebSocket 消息的路由和传递。
 CHANNEL_LAYERS = {
+    #"default" 只是一個名稱，可以改
     "default": {
+        #"BACKEND"不能更改，這固定的
+        #"channels.layers.InMemoryChannelLayer" 是一个使用記憶體作为数据存储的通道层实现。
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
