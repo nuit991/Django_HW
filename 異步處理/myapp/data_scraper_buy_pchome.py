@@ -33,16 +33,19 @@ def scroll_and_load_more(driver, scroll_count):
     scroll_count_current = 0
     last_count = 0
 
+    #計算滾頁面的次數
     while scroll_count_current < scroll_count:
-        #直接滾到當前頁面的最底
+        # 直接滾到當前頁面的最底
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(scroll_pause_time)
 
         # 重新获取item_container
         item_container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ItemContainer")))
 
+        #計算所有商品的個數
         current_count = len(item_container.find_elements(By.CLASS_NAME, "prod_name"))
         # 如果当前数量与上一次相同，说明页面没有加载更多新商品，则退出循环。
+        # 代表沒有更多商品了
         if current_count == last_count:
             break
         #每次更新商品數量
@@ -80,6 +83,7 @@ async def search_pchome_product(product_name, scroll_count):
             driver = initialize_driver()
             search_product(driver, product_name)
             item_container = scroll_and_load_more(driver, scroll_count)
+            #爬商品 / 價錢 / 圖片 / URL
             item_list = extract_items(driver, item_container)
 
             async for prd_name, product_url, price, img_url in extract_items(driver, item_container):

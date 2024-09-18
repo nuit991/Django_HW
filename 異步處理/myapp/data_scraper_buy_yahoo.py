@@ -91,6 +91,7 @@ async def extract_product_info(driver, current_page):
 
 
         # 遍历原始数据
+        # isinstance : img_urls 是一个列表，它会返回 True；否则，返回 False。
         if isinstance(img_urls, list) and img_urls:
         # 提取列表中的第一个图片 URL
             img_url = img_urls[0]
@@ -108,12 +109,15 @@ def extract_product_images(driver, product_url):
         driver.get(product_url)
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
+        #圖片位子
         img_wrapper = soup.find('div', class_='LensImage__imgWrapper___SXnau')
         if img_wrapper:
             img_tags = img_wrapper.find_all('img')
+            # .endswith 檢查是否以 ".jpg" / '.jpeg' 结尾
             img_urls = [img.get('src') for img in img_tags if img.get('src') and (img.get('src').endswith('.jpg') or img.get('src').endswith('.jpeg'))]
             time.sleep(1)
         else:
+            #圖片位子
             img_wrapper = soup.find_all('span', class_='ImageHover__thumbnail___1YTO5')
             if img_wrapper:
                 img_tags = img_wrapper[1].find_all('img')
@@ -160,7 +164,7 @@ async def search_yahoo_product(product_name, max_pages):
             
             #User決定要抓取的最大頁數
             while current_page <= max_pages:
-                #往下滑
+                #往下滑，不然有些商品不會顯示
                 scroll_to_bottom(driver)
                     
                 #抓商品資料
@@ -215,4 +219,30 @@ for item in results:
     print(f"價格: {item[2]}")
     print(f"圖片: {item[3]}")
     print("-" * 20)
+
+
+
+
+img_urls = [img.get('src') for img in img_tags if img.get('src') and (img.get('src').endswith('.jpg') or img.get('src').endswith('.jpeg'))]
+不用列表推倒式
+# 初始化空列表来存储图片 URL
+img_urls = []
+
+# 遍历 img_tags 中的每一个 img 标签
+for img in img_tags:
+    # 获取 img 标签的 'src' 属性
+    src = img.get('src')
+    
+    # 检查 'src' 是否存在且非空
+    if src:
+        # 检查 'src' 是否以 .jpg 或 .jpeg 结尾
+        if src.endswith('.jpg') or src.endswith('.jpeg'):
+            # 如果符合条件，将 'src' 添加到 img_urls 列表中
+            img_urls.append(src)
+
+# 输出结果
+print(img_urls)
+
+
+
 '''
