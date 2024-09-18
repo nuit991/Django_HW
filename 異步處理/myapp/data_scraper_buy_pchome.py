@@ -26,6 +26,7 @@ def search_product(driver, product_name):
     time.sleep(10)  # 等待页面加载
 
 # 滚动页面加载更多产品
+# 根據scroll_count來決定滾動次數，滾到最底一次就是40個項目
 def scroll_and_load_more(driver, scroll_count):
     item_container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ItemContainer")))
     scroll_pause_time = 2  # 每次滚动的停顿时间
@@ -33,6 +34,7 @@ def scroll_and_load_more(driver, scroll_count):
     last_count = 0
 
     while scroll_count_current < scroll_count:
+        #直接滾到當前頁面的最底
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(scroll_pause_time)
 
