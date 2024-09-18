@@ -106,6 +106,7 @@ async def search_momo_product(product_name, max_pages):
                 async for prd_name, product_url, price, img_url in parse_product_info(soup):
                     yield prd_name, product_url, price, img_url
                     await asyncio.sleep(1)  
+                #這邊點完下一頁之後driver就會自動更新，所以回到上面的soup = get_page_content(driver)他就會抓新的soup
                 click_next_page(driver, current_page)
                 current_page += 1
 
