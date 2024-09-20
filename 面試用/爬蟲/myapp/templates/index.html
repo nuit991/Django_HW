@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--這行聲明文件類型為 HTML5。-->
+<html lang="en">
+<!--開頭的 <html> 標籤標誌出文件是 HTML。lang="en" 屬性設定語言為英語。-->    
+<head>
+<!--包含文檔的元數據（例如標題、字符集聲明、外部樣式表或腳本鏈接等）。-->   
+    <meta charset="UTF-8">
+    <!--設定字符編碼為 UTF-8，這是最常用的編碼方式，幾乎可以涵蓋所有語言字符。-->  
+    <title>作業</title>
+    <!--設定網頁標題，會顯示在瀏覽器標籤上。-->
+    <style>
+        .button-container {
+            /* 將 .button-container 設置為 Flexbox 容器，允許其子元素（按鈕）使用 Flexbox 佈局。*/
+            display: flex;
+            /* 將子元素（按鈕）從上到下垂直排列。 */ 
+            flex-direction: column;
+            /* 將子元素（按鈕）靠左對齊。 */
+            align-items: flex-start; /* 按鈕靠左對齊 */
+            
+            padding-left: 10px; /* 給按鈕添加一些左側邊距 */
+            /* 在容器的左側添加 10px 的內邊距，讓按鈕有一些左側間距，不會緊貼邊界。 */
+        }
+
+        .button-container button {
+            margin: 10px 0; /* 在每個按鈕間添加間距 */
+            /* 給每個按鈕的上下方添加 10px 的外邊距，這樣每個按鈕之間會有一些間距，不會緊貼在一起。 */
+        }
+    </style>
+</head>
+<body>
+<!--包含網頁的主要內容。-->
+    <h1>作業</h1>
+    <!--這是一個標題，標示為主標題。-->
+    <div class="button-container">
+
+        <button onclick="location.href='{% url 'search_form_pchome' %}'">Search PChome Products</button>
+
+        <button onclick="location.href='{% url 'search_form_momo' %}'">Search Momo Products</button>
+
+        <button onclick="location.href='{% url 'search_form_yahoo' %}'">Search YAHOO Products</button>
+
+        <button onclick="location.href='{% url 'pagination_search' %}'">查看分頁示例</button>
+
+        <button onclick="location.href='{% url 'test_but' %}'">測試用</button>
+
+        <button onclick="location.href='{% url 'test_2' %}'">test_2</button>
+
+
+    </div>
+</body>
+</html>
+
+
+
+
+<!--
+設置為 Flexbox 容器意味著將一個 HTML 元素的顯示樣式設置為 flex
+這樣該元素及其子元素就會遵循 Flexbox 布局模型。Flexbox（Flexible Box Layout）是一種 CSS 布局模式
+用來更簡單和高效地安排子元素在容器中的分佈和對齊，特別是當你需要讓子元素在容器中隨著容器大小的變化而動態調整位置和大小時。
+
+
+
+
+-->
