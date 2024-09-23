@@ -1,80 +1,103 @@
-<!-- gallery/templates/gallery/image_gallery.html -->
-
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>圖片畫廊</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖片庫</title>
     <style>
-        * {
-            box-sizing: border-box; /* 包括边距和内边距 */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
 
         .gallery {
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;  /* 左对齐，确保填满每一行 */
-            margin: 0; /* 去掉外边距 */
+            justify-content: flex-start;
+            padding: 0;
         }
 
-        .gallery img {
-            width: calc(10%); /* 每个图片占据 10% 的宽度 */
-            height: auto; /* 根据图片的实际高度自适应 */
-            border: none; /* 去掉边框 */
-            padding: 0; /* 去掉内边距 */
-            margin: 0; /* 去掉外边距 */
+        .image-item {
+            flex: 0 0 calc(10%); 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto; 
+            cursor: pointer; 
+            transition: transform 0.2s; 
+            display: block; 
+        }
+
+        .image-item img:hover {
+            transform: scale(1.05); 
         }
 
         .pagination {
-            display: flex; /* 使用 flex 布局 */
-            justify-content: center; /* 中央对齐 */
-            margin-top: 20px; /* 上方间距 */
-            padding: 10px; /* 内边距 */
+            display: flex;
+            justify-content: center; 
+            margin: 20px 0;
         }
 
         .pagination a {
-            background-color: #007bff; /* 按钮背景颜色 */
-            color: white; /* 按钮文字颜色 */
-            padding: 10px 15px; /* 内边距 */
-            margin: 0 5px; /* 左右间隔 */
-            text-decoration: none; /* 去掉下划线 */
-            border-radius: 5px; /* 圆角边框 */
-            transition: background-color 0.3s; /* 渐变效果 */
+            margin: 0 5px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
 
         .pagination a:hover {
-            background-color: #0056b3; /* 悬停时改变背景颜色 */
-        }
-
-        .pagination span {
-            margin: 0 10px; /* 分页文本间隔 */
-            align-self: center; /* 让文本与按钮对齐 */
+            background-color: #0056b3; 
         }
     </style>
 </head>
 <body>
-    <h1>圖片畫廊</h1>
     <div class="gallery">
         {% for image in page_obj.object_list %}
-            <img src="{{ MEDIA_URL }}{{ image }}" alt="Image {{ forloop.counter }}">
-            
-        {% empty %}
-            <p>沒有圖片可顯示。</p>
+            <div class="image-item">
+                <img src="{{ MEDIA_URL }}{{ image }}" alt="Image {{ forloop.counter }}" onclick="deleteImage('{{ image }}')">
+            </div>
         {% endfor %}
     </div>
 
     <div class="pagination">
         {% if page_obj.has_previous %}
-            <a href="?page=1">第一頁</a>
+            <a href="?page=1">首頁</a>
             <a href="?page={{ page_obj.previous_page_number }}">上一頁</a>
         {% endif %}
 
-        <span>頁 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        <span>第 {{ page_obj.number }} 頁 / {{ page_obj.paginator.num_pages }} 頁</span>
 
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">下一頁</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">最後一頁</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">末頁</a>
         {% endif %}
     </div>
+
+    <script>
+        function deleteImage(imageName) {
+            if (confirm('確定要刪除這張圖片嗎？')) {
+                fetch("{% url 'delete_images' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ delete_images: imageName })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();  
+                    } else {
+                        alert('刪除失敗，請重試。');
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>
