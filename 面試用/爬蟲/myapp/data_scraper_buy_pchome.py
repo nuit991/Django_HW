@@ -72,7 +72,14 @@ async def parse_product_info(soup):
         #print('img_url', img_url)
         yield prd_name, product_url, price, img_url
         await asyncio.sleep(1)  # 模拟数据生成的延迟
-    
+
+#往下滾
+def scroll_to_bottom(driver):
+    scroll_step = 400
+    for x_1 in range (1, 9):
+        driver.execute_script(f"window.scrollBy(0, {scroll_step});")
+        time.sleep(1)
+
 
 #點下一頁
 def click_next_page(driver, current_page):
@@ -121,7 +128,10 @@ async def search_pchome_product(product_name, max_pages):
             if max_pages == 1:
                 current_page = max_pages
                 print(f"Scraping page {current_page}...")
+                scroll_to_bottom(driver)
+                time.sleep(2)
                 soup = get_page_content(driver)
+                
                 async for prd_name, product_url, price, img_url in parse_product_info(soup):
                     yield prd_name, product_url, price, img_url
                     await asyncio.sleep(1)  
@@ -129,7 +139,10 @@ async def search_pchome_product(product_name, max_pages):
                 
                 while current_page <= max_pages:
                     print(f"Scraping page {current_page}...")
+                    scroll_to_bottom(driver)
+                    time.sleep(2)
                     soup = get_page_content(driver)
+                    
                     async for prd_name, product_url, price, img_url in parse_product_info(soup):
                         yield prd_name, product_url, price, img_url
                         await asyncio.sleep(1)  
