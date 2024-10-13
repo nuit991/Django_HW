@@ -59,7 +59,8 @@ def parse_product_info(soup):
         #product_url = product_url_1
         #print('product_url', product_url)
 
-        img_tag = soup.find('div', class_='c-prodInfoV2__img').find('img')
+        img_tag_1 = item_container.find('div', class_='c-prodInfoV2__img')
+        img_tag = img_tag_1.find('img')
         if img_tag:
             img_url = img_tag['src']
         else:
@@ -68,6 +69,16 @@ def parse_product_info(soup):
         #print('img_url', img_url)
         item_list.append((prd_name, product_url, price, img_url))
     return item_list
+
+#往下滾
+def scroll_to_bottom(driver):
+    scroll_step = 400
+    for x_1 in range (1, 9):
+        driver.execute_script(f"window.scrollBy(0, {scroll_step});")
+        time.sleep(1)
+        
+    
+
 
 #點下一頁
 def click_next_page(driver, current_page):
@@ -120,14 +131,20 @@ def search_pchome_product(product_name, max_pages):
             if max_pages == 1:
                 current_page == max_pages
                 print(f"Scraping page {current_page}...")
+                scroll_to_bottom(driver)
+                time.sleep(2)
                 soup = get_page_content(driver)
+                
                 item_list.extend(parse_product_info(soup))
 
             else:
                 
                 while current_page <= max_pages:
                     print(f"Scraping page {current_page}...")
+                    scroll_to_bottom(driver)
+                    time.sleep(2)
                     soup = get_page_content(driver)
+                    
                     item_list.extend(parse_product_info(soup))  
 
                     click_next_page(driver, current_page)
