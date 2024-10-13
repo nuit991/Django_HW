@@ -103,7 +103,7 @@ def click_next_page(driver, current_page):
 
 
 #主要執行程式
-def search_momo_product(product_name, max_pages):
+def search_pchome_product(product_name, max_pages):
     retries = 5
     attempt = 0
     item_list = []
