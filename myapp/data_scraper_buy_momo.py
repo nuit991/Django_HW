@@ -10,7 +10,7 @@ import time
 #初始化瀏覽器
 def initialize_driver():
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    #chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--log-level=3")
     driver = webdriver.Chrome(options=chrome_options)
@@ -35,20 +35,24 @@ def get_page_content(driver):
 #找到商品標籤，抓取名稱 / Url / 價錢 / 圖片
 def parse_product_info(soup):
     item_list = []
-    list_area_div = soup.find('div', class_='listArea')
-    item_containers = list_area_div.find('ul', class_='clearfix')
+    list_area_div_1 = soup.find('div', class_='listArea')
+    list_area_div = list_area_div_1.find_all('li')
+    print(len(list_area_div))
+    #item_containers = list_area_div.find('ul', class_='clearfix')
     #print('item_containers', item_containers)
-    print(len(item_containers))
-    for item_container in item_containers:
+    #print(len(item_containers))
+    for item_container in list_area_div:
         prd_name = item_container.find('h3', class_='prdName').text.strip()
         print('prd_name', prd_name)
 
-        money_div = item_container.find('p', class_='money')
-        price = money_div.find('span', class_='price').text.strip()
+        #money_div = item_container.find('div', class_='money')
+        #price_1 = money_div.find('span', class_='price')
+        #price_2 = price_1.find('i', class_='icon icon-dollar-sign')
+        price = item_container.find('span', class_='price').find('b').text.strip()
         print('price', price)
 
-        #product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
-        product_url = 'https://www.momoshop.com.tw' + item_container.find('a', class_='goodsUrl')['href']
+        product_url_good = item_container.find('a', class_='goodsUrl')['href']
+        product_url = 'https://www.momoshop.com.tw' + product_url_good 
         #product_url = product_url_1
         print('product_url', product_url)
 
