@@ -51,8 +51,10 @@ def parse_product_info(soup):
         price = item_container.find('span', class_='price').find('b').text.strip()
         print('price', price)
 
-        product_url_good = item_container.find('a', class_='goodsUrl')['href']
-        product_url = 'https://www.momoshop.com.tw' + product_url_good 
+        product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
+        product_url = product_url_good .find('a', class_='goods-img-url')['href']
+        #print('product_url_good', product_url_good)
+        #product_url = 'https://www.momoshop.com.tw' + product_url_good 
         #product_url = product_url_1
         print('product_url', product_url)
 
@@ -132,7 +134,7 @@ def search_momo_product(product_name, max_pages):
     return item_list, total_items
 
 
-
+'''
 # 要搜索的商品名称
 product_name = '冷氣'
 results, total_items = search_momo_product(product_name, max_pages=1)
@@ -144,3 +146,4 @@ for item in results:
     print(f"价格: {item[2]}")
     print(f"图片: {item[3]}")
     print("-" * 20)
+'''
