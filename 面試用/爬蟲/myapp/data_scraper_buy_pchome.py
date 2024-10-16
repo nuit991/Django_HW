@@ -92,6 +92,7 @@ def click_next_page(driver, current_page):
             element.click()
             print(f'第{current_page} OK')
             time.sleep(5)
+            current_page += 1
 
         elif current_page > 1 & current_page <= 5 : 
             css_selector = f'/html/body/div[1]/main/div[1]/div/div/section[2]/div/div/section/div/div[2]/div/div[3]/div/ul/li[{current_page}]/a'
@@ -99,7 +100,7 @@ def click_next_page(driver, current_page):
             element.click()
             print(f'第{current_page} OK')
             time.sleep(5)
-
+            current_page += 1
             #PChome下一頁標籤最多到li[6]
         else:
             css_selector = f'/html/body/div[1]/main/div[1]/div/div/section[2]/div/div/section/div/div[2]/div/div[3]/div/ul/li[6]/a'
@@ -107,6 +108,7 @@ def click_next_page(driver, current_page):
             element.click()
             print(f'第{current_page} OK')
             time.sleep(5)
+            current_page += 1
     except Exception as e:
         print(f"Error clicking page {current_page}: {e}")
 
@@ -135,6 +137,8 @@ async def search_pchome_product(product_name, max_pages):
                 async for prd_name, product_url, price, img_url in parse_product_info(soup):
                     yield prd_name, product_url, price, img_url
                     await asyncio.sleep(1)  
+                break 
+            
             else:
                 
                 while current_page <= max_pages:
@@ -148,7 +152,7 @@ async def search_pchome_product(product_name, max_pages):
                         await asyncio.sleep(1)  
 
                     click_next_page(driver, current_page)
-                    current_page += 1
+                break 
 
         except Exception as e:
             print(f"Exception occurred: {str(e)}")
