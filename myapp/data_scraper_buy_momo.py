@@ -52,9 +52,9 @@ def parse_product_info(soup):
         print('price', price)
 
         #product_url_good = item_container.find('div', class_='swiper-slide swiper-slide-active')
-        product_url = item_container.find('a', class_='goodsUrl')['href']
+        product_url_good = item_container.find('a', class_='goodsUrl')['href']
         #print('product_url_good', product_url_good)
-        #product_url = 'https://www.momoshop.com.tw' + product_url_good 
+        product_url = 'https://www.momoshop.com.tw' + product_url_good 
         #product_url = product_url_1
         print('product_url', product_url)
 
